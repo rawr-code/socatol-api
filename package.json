@@ -1,0 +1,20 @@
+{
+  "name": "socatol-api",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "repository": "https://github.com/EmmanuelVillegas/socatol-api.git",
+  "author": "Emmanuel Villegas <emmanuelvillegas01@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^1.18.7"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.14",
+    "morgan": "^1.9.1"
+  }
+}
