@@ -3,17 +3,22 @@ const config = require("./config");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
+const productRoutes = require("./routes/productRoutes");
 
 // Initialization
 const app = express();
 
+// Middlewares
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(morgan("dev"));
 
+// Routes
 app.get("/", (req, res) => {
   res.status(200).send({ message: "Home" });
 });
+
+app.use("/api", productRoutes);
 
 mongoose
   .connect(

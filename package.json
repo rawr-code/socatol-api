@@ -3,12 +3,18 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js"
+    "start": "nodemon --exec babel-node src/server.js",
+    "build": "babel src --out-dir dist",
+    "serve": "node dist/server.js"
   },
   "repository": "https://github.com/EmmanuelVillegas/socatol-api.git",
   "author": "Emmanuel Villegas <emmanuelvillegas01@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@babel/cli": "^7.1.5",
+    "@babel/core": "^7.1.6",
+    "@babel/node": "^7.0.0",
+    "@babel/preset-env": "^7.1.6",
     "nodemon": "^1.18.7"
   },
   "dependencies": {
