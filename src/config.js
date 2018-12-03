@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   port: process.env.PORT || 3000,
   db: "mongodb://localhost/socatol-api-rest"
 };

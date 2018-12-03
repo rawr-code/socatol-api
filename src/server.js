@@ -1,9 +1,10 @@
-const express = require("express");
-const config = require("./config");
-const bodyParser = require("body-parser");
-const morgan = require("morgan");
-const mongoose = require("mongoose");
-const productRoutes = require("./routes/productRoutes");
+import express from "express";
+import bodyParser from "body-parser";
+import morgan from "morgan";
+import mongoose from "mongoose";
+import config from "./config";
+
+import productRoutes from "./routes/productRoutes";
 
 // Initialization
 const app = express();
@@ -15,7 +16,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.get("/", (req, res) => {
-  res.status(200).send({ message: "Home" });
+  res.status(200).json({ message: "Home" });
 });
 
 app.use("/api", productRoutes);

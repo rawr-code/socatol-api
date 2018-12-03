@@ -1,4 +1,4 @@
-const Product = require("../models/productSchema");
+import Product from "../models/productSchema";
 
 function getProducts(req, res) {
   Product.find({}, (err, products) => {
@@ -9,6 +9,4 @@ function getProducts(req, res) {
   });
 }
 
-module.exports = {
-  getProducts
-};
+export { getProducts };
