@@ -4,7 +4,15 @@ import Provider from "../models/Provider";
 
 const ProductController = {
   getAll: async (req, res) => {
-    const products = await Product.find({}).populate("Variants");
+    const products = await Product.find({}).populate({
+      path: "variants",
+      model: "Variant",
+      populate: {
+        path: "providers.provider",
+        model: "Provider"
+      }
+    });
+
     res.status(200).json({ products });
   },
 
@@ -38,17 +46,17 @@ const ProductController = {
     let { variants = [], providerId } = req.body;
     let product = await Product.findById(productId);
     let provider = await Provider.findById(providerId);
-    let uuu = variants.map(async variant => {
-      let prueba = new Variant(variant);
-      prueba.providers.push({ provider, price: variant.price });
-      await prueba.save();
-      return prueba;
-      // console.log(product.variants);
-    });
-    console.log(uuu);
-    // console.log(product.variants);
-    // await product.save();
-    res.status(200).json({ product });
+    let test = new Variant({ name: "TEst" });
+    test.providers.push({ provider });
+    await test.save();
+    provider.products.push(test);
+    await provider.save();
+    product.variants.push(test);
+    await product.save();
+
+    res
+      .status(200)
+      .json({ product, provider: { ...provider }, test: provider });
   }
 };
 
