@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-const productVariantSchema = new Schema({
+const VariantSchema = new Schema({
   name: String,
   providers: [
     {
@@ -10,4 +10,4 @@ const productVariantSchema = new Schema({
   ]
 });
 
-export default model("ProductVariant", productVariantSchema);
+export default model("Variant", VariantSchema);

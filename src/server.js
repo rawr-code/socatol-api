@@ -4,7 +4,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import config from "./config";
 
-import productRoutes from "./routes/productRoutes";
+import * as routes from "./routes";
 
 // Initialization
 const app = express();
@@ -19,7 +19,9 @@ app.get("/", (req, res) => {
   res.status(200).json({ message: "Home" });
 });
 
-app.use("/api", productRoutes);
+app.use("/api", routes.productRoutes);
+app.use("/api", routes.warehouseRoutes);
+app.use("/api", routes.providerRoutes);
 
 mongoose
   .connect(
