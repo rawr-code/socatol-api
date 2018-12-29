@@ -11,8 +11,11 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      // select: false,
       required: true
+    },
+    personalInfo: {
+      type: Schema.Types.ObjectId,
+      ref: "PersonalInfo"
     },
     active: Boolean
   },

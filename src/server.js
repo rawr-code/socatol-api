@@ -42,7 +42,7 @@ server.get(
   }
 );
 
-server.use("/users", users);
+server.use("/user", users);
 
 // Connect to database and run server
 require("./config/mongoose")(server);
