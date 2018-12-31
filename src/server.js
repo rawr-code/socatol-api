@@ -6,6 +6,12 @@ const passport = require("passport");
 
 const users = require("./routes/user");
 
+// Load Routes
+const routes = require("./routes");
+
+// Warehouse Routes
+const { WarehouseRoutes, ProductRoutes } = routes.Warehouse;
+
 // Initialization
 const server = express();
 server.use((req, res, next) => {
@@ -43,6 +49,8 @@ server.get(
 );
 
 server.use("/user", users);
+server.use("/api/warehouse", WarehouseRoutes);
+server.use("/api/product", ProductRoutes);
 
 // Connect to database and run server
 require("./config/mongoose")(server);
