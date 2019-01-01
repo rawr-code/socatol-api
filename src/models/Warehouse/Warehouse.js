@@ -11,7 +11,13 @@ const WarehouseSchema = new Schema({
     unique: true,
 
     lowercase: true
-  }
+  },
+  products: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Product"
+    }
+  ]
 });
 
 module.exports = model("Warehouse", WarehouseSchema);
