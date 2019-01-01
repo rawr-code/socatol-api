@@ -26,14 +26,9 @@ const WarehouseController = {
   update: async (req, res) => {
     const { warehouseId } = req.params;
     const data = req.body;
-    // const { name, code } = req.body;
-    const result = await Warehouse.findByIdAndUpdate(warehouseId, data, {
-      new: true
-    });
+    await Warehouse.findByIdAndUpdate(warehouseId, data);
 
-    res
-      .status(200)
-      .json({ success: true, message: "Actualizado con exito!", result });
+    res.status(200).json({ success: true, message: "Actualizado con exito!" });
   },
 
   delete: async (req, res) => {

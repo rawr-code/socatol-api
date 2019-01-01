@@ -8,19 +8,28 @@ const ProductController = {
   },
 
   get: async (req, res) => {
-    const { productId } = req.params;
-    const product = await Product.findById(productId);
-
-    return res.status(200).json(product);
+    try {
+      const { id } = req.params;
+      const product = await Product.findById(id);
+      if (product === null) {
+        return res.status(404).json({ message: "No encontrado." });
+      } else {
+        return res.status(200).json(product);
+      }
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ message: "Error al consultar", error: err });
+    }
   },
 
   new: async (req, res) => {
     try {
-      const { name, description, warehouseId } = req.body;
+      const { warehouseId, ...data } = req.body;
+      const newProduct = new Product({ ...data });
       const warehouse = await Warehouse.findById(warehouseId);
-      const newProduct = new Product({ name, description, warehouse });
+      if (warehouse !== null) newProduct.warehouse = warehouse;
       await newProduct.save();
-
       return res.status(201).json({
         newProduct,
         success: true,
@@ -35,23 +44,19 @@ const ProductController = {
   },
 
   update: async (req, res) => {
-    // const { warehouseId } = req.params;
-    // const { name, code } = req.body;
-    // const data = { name, code };
-    // await Warehouse.findByIdAndUpdate(warehouseId, data);
-
-    // res.status(200).json({ success: true, message: "Actualizado con exito!" });
     try {
-      const { productId } = req.params;
-      console.log(productId);
-      const { name, description } = req.body;
-      console.log(req.body);
-      const data = { name, description };
-      await Warehouse.findByIdAndUpdate(productId, data);
+      const { id } = req.params;
+      const data = req.body;
+      const product = await Product.findByIdAndUpdate(id, data);
 
-      res
-        .status(200)
-        .json({ success: true, message: "Actualizado con exito!" });
+      if (product === null)
+        return res
+          .status(404)
+          .json({ success: false, message: "No encontrado." });
+      else
+        return res
+          .status(200)
+          .json({ success: true, message: "Actualizado con exito!" });
     } catch (err) {
       return res.status(500).json({
         message: "Ocurrio un error al actualizar.",
@@ -62,8 +67,8 @@ const ProductController = {
 
   delete: async (req, res) => {
     try {
-      const { productId } = req.params;
-      await Product.findByIdAndRemove(productId);
+      const { id } = req.params;
+      await Product.findByIdAndRemove(id);
 
       res.status(200).json({ success: true, message: "Eliminado con exito!" });
     } catch (err) {

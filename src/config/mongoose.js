@@ -7,6 +7,7 @@ module.exports = server =>
       config.db,
       {
         useCreateIndex: true,
+        useFindAndModify: false,
         useNewUrlParser: true
       }
     )
