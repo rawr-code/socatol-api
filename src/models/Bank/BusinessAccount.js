@@ -8,7 +8,8 @@ const BusinessAccountSchema = new Schema({
   },
   account: {
     type: Schema.Types.ObjectId,
-    ref: "Account"
+    ref: "Account",
+    required: true
   }
 });
 
