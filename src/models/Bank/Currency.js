@@ -5,7 +5,23 @@ const CurrencySchema = new Schema({
     type: String,
     lowercase: true,
     required: true
-  }
+  },
+  code: {
+    type: String,
+    lowercase: true,
+    required: true
+  },
+  simbol: {
+    type: String,
+    lowercase: true,
+    required: true
+  },
+  banks: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Bank"
+    }
+  ]
 });
 
 module.exports = model("Currency", CurrencySchema);
