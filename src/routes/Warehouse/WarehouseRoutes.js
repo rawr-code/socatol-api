@@ -8,4 +8,6 @@ router.get("/:warehouseId", controller.get);
 router.patch("/:warehouseId", controller.update);
 router.delete("/:warehouseId", controller.delete);
 
+router.get("/:warehouseId/products", controller.getProducts);
+
 module.exports = router;

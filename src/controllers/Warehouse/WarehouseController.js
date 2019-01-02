@@ -11,7 +11,11 @@ const WarehouseController = {
     const { warehouseId } = req.params;
     const warehouse = await Warehouse.findById(warehouseId).populate({
       path: "products",
-      populate: { path: "presentations" }
+      select: ["name", "description"],
+      populate: {
+        path: "presentations",
+        select: ["name", "description", "price", "stock"]
+      }
     });
 
     return res.status(200).json(warehouse);
@@ -54,6 +58,27 @@ const WarehouseController = {
       return res
         .status(200)
         .json({ success: true, message: "Eliminado con exito!" });
+  },
+
+  getProducts: async (req, res) => {
+    const { warehouseId } = req.params;
+    const warehouse = await Warehouse.findById(warehouseId).populate({
+      path: "products",
+      select: ["name", "description"],
+      populate: {
+        path: "presentations",
+        select: ["name", "description", "price", "stock"]
+      }
+    });
+
+    if (warehouse === null) {
+      return res
+        .status(404)
+        .json({ success: false, message: "No encontrado." });
+    } else {
+      const products = warehouse.products;
+      return res.status(200).json({ success: true, products });
+    }
   }
 };
 
