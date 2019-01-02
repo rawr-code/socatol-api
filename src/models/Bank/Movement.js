@@ -15,16 +15,7 @@ const MovementSchema = new Schema({
     lowercase: true,
     required: true
   },
-  type: {
-    type: String,
-    lowercase: true,
-    required: true
-  },
   amount: {
-    type: Number,
-    required: true
-  },
-  balance: {
     type: Number,
     required: true
   },

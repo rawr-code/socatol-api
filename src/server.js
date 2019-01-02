@@ -15,7 +15,8 @@ const {
   CurrencyRoutes,
   BankRoutes,
   AccountRoutes,
-  BusinessAccountRoutes
+  BusinessAccountRoutes,
+  MovementRoutes
 } = routes.Bank;
 
 // Warehouse Routes
@@ -70,6 +71,7 @@ server.use("/api/currency", CurrencyRoutes);
 server.use("/api/bank", BankRoutes);
 server.use("/api/account", AccountRoutes);
 server.use("/api/businessAccount", BusinessAccountRoutes);
+server.use("/api/movement", MovementRoutes);
 
 // Connect to database and run server
 require("./config/mongoose")(server);
