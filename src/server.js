@@ -4,10 +4,11 @@ const cors = require("cors");
 const morgan = require("morgan");
 const passport = require("passport");
 
-const users = require("./routes/user");
-
 // Load Routes
 const routes = require("./routes");
+
+// User Routes
+const { UserRoutes } = routes.User;
 
 // Bank Routes
 const { CurrencyRoutes } = routes.Bank;
@@ -51,7 +52,8 @@ server.get(
   }
 );
 
-server.use("/user", users);
+// API: User Routes
+server.use("/api/user", UserRoutes);
 
 // API: Wareouse Routes
 server.use("/api/warehouse", WarehouseRoutes);
