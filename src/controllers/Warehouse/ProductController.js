@@ -2,14 +2,17 @@ const { Product, Warehouse } = require("../../models/Warehouse");
 
 const ProductController = {
   getAll: async (req, res) => {
-    const products = await Product.find({});
+    const products = await Product.find({}, ["name", "description"]).populate(
+      "warehouse",
+      ["name", "code"]
+    );
 
     return res.status(200).json(products);
   },
 
   get: async (req, res) => {
-    const { id } = req.params;
-    const product = await Product.findById(id)
+    const { productId } = req.params;
+    const product = await Product.findById(productId)
       .populate("warehouse", ["name", "code"])
       .populate("presentations");
 
@@ -21,8 +24,8 @@ const ProductController = {
   },
 
   new: async (req, res) => {
-    const { warehouseId, name, description } = req.body;
-    const newProduct = new Product({ name, description });
+    const { warehouseId, ...data } = req.body;
+    const newProduct = new Product({ ...data });
     const warehouse = await Warehouse.findById(warehouseId);
     await newProduct.save();
 
@@ -39,9 +42,9 @@ const ProductController = {
   },
 
   update: async (req, res) => {
-    const { id } = req.params;
+    const { productId } = req.params;
     const data = req.body;
-    const product = await Product.findByIdAndUpdate(id, data);
+    const product = await Product.findByIdAndUpdate(productId, data);
 
     if (product === null)
       return res
@@ -54,8 +57,8 @@ const ProductController = {
   },
 
   delete: async (req, res) => {
-    const { id } = req.params;
-    const product = await Product.findByIdAndRemove(id);
+    const { productId } = req.params;
+    const product = await Product.findByIdAndRemove(productId);
 
     if (product === null)
       return res

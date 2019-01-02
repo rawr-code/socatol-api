@@ -2,17 +2,17 @@ const { Warehouse, Product } = require("../../models/Warehouse");
 
 const WarehouseController = {
   getAll: async (req, res) => {
-    const warehouses = await Warehouse.find({}).populate("products", [
-      "name",
-      "description"
-    ]);
+    const warehouses = await Warehouse.find({}, ["name", "code"]);
 
     return res.status(200).json(warehouses);
   },
 
   get: async (req, res) => {
     const { warehouseId } = req.params;
-    const warehouse = await Warehouse.findById(warehouseId);
+    const warehouse = await Warehouse.findById(warehouseId).populate({
+      path: "products",
+      populate: { path: "presentations" }
+    });
 
     return res.status(200).json(warehouse);
   },
