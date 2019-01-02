@@ -2,24 +2,37 @@ const { Presentation, Product } = require("../../models/Warehouse");
 
 const PresentationController = {
   getAll: async (req, res) => {
-    const presentations = await Presentation.find({});
+    const presentations = await Presentation.find({}, [
+      "name",
+      "description",
+      "stock",
+      "price",
+      "product"
+    ]);
 
     return res.status(200).json(presentations);
   },
 
   get: async (req, res) => {
     const { presentationId } = req.params;
-    const presentation = await Presentation.findById(presentationId).populate(
-      "product",
-      ["name", "description"]
-    );
+    const presentation = await Presentation.findById(presentationId, [
+      "name",
+      "description",
+      "stock",
+      "price",
+      "product"
+    ]).populate({
+      path: "product",
+      select: ["name", "description", "warehouse"],
+      populate: { path: "warehouse", select: ["name", "code"] }
+    });
 
     if (presentation === null) {
       return res
         .status(404)
         .json({ success: false, message: "No encontrado." });
     } else {
-      return res.status(200).json({ success: true, presentation });
+      return res.status(200).json(presentation);
     }
   },
 
