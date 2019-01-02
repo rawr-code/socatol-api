@@ -6,6 +6,12 @@ const BusinessAccountSchema = new Schema({
     lowercase: true,
     required: true
   },
+  movements: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Movement"
+    }
+  ],
   account: {
     type: Schema.Types.ObjectId,
     ref: "Account",
