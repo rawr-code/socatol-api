@@ -15,10 +15,12 @@ const ProductSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Warehouse"
   },
-  presentation: {
-    type: Schema.Types.ObjectId,
-    ref: "Presentation"
-  }
+  presentations: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Presentation"
+    }
+  ]
 });
 
 module.exports = model("Product", ProductSchema);

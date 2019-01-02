@@ -6,7 +6,7 @@ const PresentationSchema = new Schema({
     required: true,
     lowercase: true
   },
-  desctiption: {
+  description: {
     type: String,
     required: true,
     lowercase: true
