@@ -8,7 +8,8 @@ const AccountSchema = new Schema({
   type: {
     type: String,
     required: true,
-    lowercase: true
+    lowercase: true,
+    enum: ["Corriente", "Ahorro"]
   },
   bank: {
     type: Schema.Types.ObjectId,
