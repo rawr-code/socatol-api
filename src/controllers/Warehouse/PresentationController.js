@@ -45,8 +45,7 @@ const PresentationController = {
         .status(404)
         .json({ success: false, message: "Producto no encontrado." });
     } else {
-      const newPresentation = new Presentation({ ...data });
-      newPresentation.product = product;
+      const newPresentation = new Presentation({ product, ...data });
       await newPresentation.save();
       product.presentations.push(newPresentation);
       await product.save();

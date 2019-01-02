@@ -12,9 +12,14 @@ const ProductController = {
 
   get: async (req, res) => {
     const { productId } = req.params;
-    const product = await Product.findById(productId)
+    const product = await Product.findById(productId, [
+      "name",
+      "description",
+      "warehouse",
+      "presentations"
+    ])
       .populate("warehouse", ["name", "code"])
-      .populate("presentations");
+      .populate("presentations", ["name", "description", "stock", "price"]);
 
     if (product === null) {
       return res.status(404).json({ message: "No encontrado." });
@@ -25,12 +30,10 @@ const ProductController = {
 
   new: async (req, res) => {
     const { warehouseId, ...data } = req.body;
-    const newProduct = new Product({ ...data });
     const warehouse = await Warehouse.findById(warehouseId);
-    await newProduct.save();
 
     if (warehouse !== null) {
-      newProduct.warehouse = warehouse;
+      const newProduct = new Product({ warehouse, ...data });
       await newProduct.save();
       warehouse.products.push(newProduct);
       await warehouse.save();
