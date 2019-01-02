@@ -4,8 +4,8 @@ const controller = require("../../controllers/Warehouse/ProductController");
 router.get("/", controller.getAll);
 router.post("/", controller.new);
 
-router.get("/:id", controller.get);
-router.patch("/:id", controller.update);
-router.delete("/:id", controller.delete);
+router.get("/:productId", controller.get);
+router.patch("/:productId", controller.update);
+router.delete("/:productId", controller.delete);
 
 module.exports = router;
