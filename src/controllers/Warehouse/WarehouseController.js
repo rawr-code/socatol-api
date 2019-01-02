@@ -4,38 +4,53 @@ const WarehouseController = {
   getAll: async (req, res) => {
     const warehouses = await Warehouse.find({});
 
-    res.status(200).json(warehouses);
+    return res.status(200).json(warehouses);
   },
 
   get: async (req, res) => {
-    const { warehouseId } = req.params;
-    console.log(warehouseId);
-    const warehouse = await Warehouse.findById(warehouseId);
+    const { id } = req.params;
+    const warehouse = await Warehouse.findById(id);
 
-    res.status(200).json(warehouse);
+    return res.status(200).json(warehouse);
   },
 
   new: async (req, res) => {
-    const { name, code } = req.body;
-    const newWarehouse = new Warehouse({ name, code });
-    const warehouse = await newWarehouse.save();
+    const data = req.body;
+    const newWarehouse = new Warehouse(data);
+    await newWarehouse.save();
 
-    res.status(200).json(warehouse);
+    return res
+      .status(201)
+      .json({ success: true, message: "Registrado con exito!" });
   },
 
   update: async (req, res) => {
-    const { warehouseId } = req.params;
+    const { id } = req.params;
     const data = req.body;
-    await Warehouse.findByIdAndUpdate(warehouseId, data);
+    const warehouse = await Warehouse.findByIdAndUpdate(id, data);
 
-    res.status(200).json({ success: true, message: "Actualizado con exito!" });
+    if (warehouse === null)
+      return res
+        .status(404)
+        .json({ success: false, message: "No encontrado." });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Actualizado con exito!" });
   },
 
   delete: async (req, res) => {
-    const { warehouseId } = req.params;
-    await Warehouse.findByIdAndRemove(warehouseId);
+    const { id } = req.params;
+    const warehouse = await Warehouse.findByIdAndRemove(id);
 
-    res.status(200).json({ success: true, message: "Eliminado con exito!" });
+    if (warehouse === null)
+      return res
+        .status(404)
+        .json({ success: false, message: "No encontrado." });
+    else
+      return res
+        .status(200)
+        .json({ success: true, message: "Eliminado con exito!" });
   }
 };
 
