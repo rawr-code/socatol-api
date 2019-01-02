@@ -13,6 +13,10 @@ const CurrencySchema = new Schema({
   },
   simbol: {
     type: String,
+    required: true
+  },
+  country: {
+    type: String,
     lowercase: true,
     required: true
   },

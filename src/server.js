@@ -9,6 +9,9 @@ const users = require("./routes/user");
 // Load Routes
 const routes = require("./routes");
 
+// Bank Routes
+const { CurrencyRoutes } = routes.Bank;
+
 // Warehouse Routes
 const { WarehouseRoutes, ProductRoutes, PresentationRoutes } = routes.Warehouse;
 
@@ -49,9 +52,14 @@ server.get(
 );
 
 server.use("/user", users);
+
+// API: Wareouse Routes
 server.use("/api/warehouse", WarehouseRoutes);
 server.use("/api/product", ProductRoutes);
 server.use("/api/presentation", PresentationRoutes);
+
+// API: Bank Routes
+server.use("/api/currency", CurrencyRoutes);
 
 // Connect to database and run server
 require("./config/mongoose")(server);
