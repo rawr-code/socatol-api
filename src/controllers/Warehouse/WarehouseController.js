@@ -1,15 +1,18 @@
-const { Warehouse } = require("../../models/Warehouse");
+const { Warehouse, Product } = require("../../models/Warehouse");
 
 const WarehouseController = {
   getAll: async (req, res) => {
-    const warehouses = await Warehouse.find({});
+    const warehouses = await Warehouse.find({}).populate("products", [
+      "name",
+      "description"
+    ]);
 
     return res.status(200).json(warehouses);
   },
 
   get: async (req, res) => {
-    const { id } = req.params;
-    const warehouse = await Warehouse.findById(id);
+    const { warehouseId } = req.params;
+    const warehouse = await Warehouse.findById(warehouseId);
 
     return res.status(200).json(warehouse);
   },
@@ -25,9 +28,9 @@ const WarehouseController = {
   },
 
   update: async (req, res) => {
-    const { id } = req.params;
+    const { warehouseId } = req.params;
     const data = req.body;
-    const warehouse = await Warehouse.findByIdAndUpdate(id, data);
+    const warehouse = await Warehouse.findByIdAndUpdate(warehouseId, data);
 
     if (warehouse === null)
       return res
@@ -40,8 +43,8 @@ const WarehouseController = {
   },
 
   delete: async (req, res) => {
-    const { id } = req.params;
-    const warehouse = await Warehouse.findByIdAndRemove(id);
+    const { warehouseId } = req.params;
+    const warehouse = await Warehouse.findByIdAndRemove(warehouseId);
 
     if (warehouse === null)
       return res

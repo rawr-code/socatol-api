@@ -14,6 +14,10 @@ const ProductSchema = new Schema({
   warehouse: {
     type: Schema.Types.ObjectId,
     ref: "Warehouse"
+  },
+  presentation: {
+    type: Schema.Types.ObjectId,
+    ref: "Presentation"
   }
 });
 
