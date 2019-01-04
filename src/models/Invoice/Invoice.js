@@ -14,6 +14,15 @@ const InvoiceSchema = new Schema({
     type: Number,
     required: true
   },
+  paid: {
+    type: Boolean,
+    default: false
+  },
+  paymentType: {
+    type: String,
+    required: true,
+    lowercase: true
+  },
   presentations: [
     {
       type: Schema.Types.ObjectId,
@@ -23,9 +32,15 @@ const InvoiceSchema = new Schema({
   ],
   user: {
     type: Schema.Types.ObjectId,
-    ref: "User",
-    required: true
-  }
+    ref: "User"
+    // required: true
+  },
+  fees: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Movement"
+    }
+  ]
 });
 
 module.exports = model("Invoice", InvoiceSchema);
