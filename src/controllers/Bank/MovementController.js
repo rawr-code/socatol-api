@@ -2,26 +2,27 @@ const { Movement, BusinessAccount } = require("../../models/Bank");
 
 const MovementController = {
   getAll: async (req, res) => {
-    const movements = await Movement.find({}, [
-      "date",
-      "reference",
-      "description",
-      "amount",
-      "account"
-    ]).populate("account", "name");
+    const movements = await Movement.find({});
 
     return res.status(200).json(movements);
   },
 
   get: async (req, res) => {
     const { movementId } = req.params;
-    const movement = await Movement.findById(movementId, [
-      "date",
-      "reference",
-      "description",
-      "amount",
-      "account"
-    ]).populate("account", "name");
+    const movement = await Movement.findById(movementId)
+      .populate("account", "bank", {
+        populate: "account",
+        select: ["bank", "type"]
+      })
+      .populate("invoices", [
+        "number",
+        "address",
+        "dateEmit",
+        "paid",
+        "paymentType",
+        "type",
+        "user"
+      ]);
 
     if (movement === null) {
       return res
