@@ -1,17 +1,22 @@
-const { Invoice } = require("../../models/Invoice");
 const { User } = require("../../models/User");
-const { Supplider, Client } = require("../../models/Warehouse");
+const { Presentation } = require("../../models/Warehouse");
+
+const {
+  Invoice,
+  PurchaseInvoice,
+  SalesInvoice,
+  Supplider,
+  Client
+} = require("../../models/Invoice");
 
 const InvoiceController = {
   getAll: async (req, res) => {
     const invoices = await Invoice.find({}, [
-      "type",
       "number",
+      "type",
+      "description",
       "dateEmit",
-      "paymentType",
-      "paid",
-      "supplider",
-      "client"
+      "paid"
     ]);
 
     return res.status(200).json(invoices);
@@ -19,9 +24,8 @@ const InvoiceController = {
 
   get: async (req, res) => {
     const { invoiceId } = req.params;
-    const invoice = await Invoice.findById(invoiceId)
+    let invoice = await Invoice.findById(invoiceId)
       .populate("user", "username")
-      .populate("presentations", ["name", "price", "stock", "product"])
       .populate("fees");
 
     if (invoice === null) {
@@ -29,66 +33,100 @@ const InvoiceController = {
         .status(404)
         .json({ success: false, message: "No encontrado." });
     } else {
-      return res
-        .status(200)
-        .json({ success: true, message: "Registrado con exito!" });
+      if (invoice.type === "purchase") {
+        invoice.details = await PurchaseInvoice.findById(
+          invoice.details
+        ).populate("supplider", { populate: { path: "personalInfo" } });
+      } else {
+        invoice.details = await SalesInvoice.findById(invoice.details)
+          .populate("presentations", ["name", "price", "stock", "product"])
+          .populate("client", { populate: { path: "personalInfo" } });
+      }
+
+      return res.status(200).json(invoice);
     }
   },
-  // datos-----
-  //"number",
-  //"address",
-  //"dateEmit",
-  //"paymentType",
-  //"paid",
 
-  // ----------
-  //"type",
-  //"products",
-  //"user",
-  //"supplider",
-  //"client",
-  //"presentations",
-  //"fees",
   new: async (req, res) => {
-    const { userId, type, products, presentations, ...data } = req.body;
+    const { userId } = req.body;
     const user = await User.findById(userId);
 
-    if (user === null && user.active) {
+    if (user === null) {
       return res
         .status(404)
         .json({ success: false, message: "Usuario no encontrado." });
     } else {
-      const newInvoice = new Invoice({ type, ...data });
+      const { description, dateEmit, paymentType, details } = req.body;
+      let newInvoice = new Invoice({
+        user,
+        type,
+        description,
+        dateEmit,
+        paymentType
+      });
 
       if (type === "purchase") {
-        const supplider =
-          data.supplider.id && (await Supplider.findById(data.supplider.id));
+        const supplider = await Supplider.findById(details.supplider);
 
         if (supplider === null) {
           return res
             .status(404)
             .json({ success: false, message: "Proveedor no encontrado." });
         } else {
-          newInvoice.supplider = supplider;
-          newInvoice.products = products;
+          const products = details.products;
+          const newPurchaseInvoice = new PurchaseInvoice({
+            invoice: newInvoice,
+            supplider,
+            products
+          });
           await newInvoice.save();
+          await newPurchaseInvoice.save();
+          newInvoice.details = newPurchaseInvoice;
+          await newInvoice.save();
+          supplider.invoices.push(newInvoice);
+          await supplider.save();
 
           return res
             .status(201)
             .json({ success: true, message: "Registrado con exito!" });
         }
       } else {
-        const client =
-          data.client.id && (await Client.findById(data.client.id));
+        const client = await Client.findById(details.client);
 
         if (client === null) {
           return res
             .status(404)
             .json({ success: false, message: "Cliente no encontrado." });
         } else {
-          newInvoice.client = client;
-          newInvoice.presentations = presentations;
+          const presentations = details.products;
+          const presentationsIdPrice = [];
+          await presentations.map(async (_id, price) => {
+            const presentation = await Presentation.findById(_id);
+
+            if (presentation === null) {
+              return res.status(404).json({
+                success: false,
+                message: "Presentación no encontrado."
+              });
+            } else {
+              presentationsIdPrice.push({ presentation, price });
+            }
+          });
+
+          const newSalesInvoice = new SalesInvoice({
+            invoice: newInvoice,
+            address: details.address,
+            presentations: presentationsIdPrice,
+            client
+          });
+
           await newInvoice.save();
+          await newSalesInvoice.save();
+          newInvoice.details = newSalesInvoice;
+          await newInvoice.save();
+
+          client.invoices.push(newInvoice);
+          await client.save();
 
           return res
             .status(201)
@@ -100,7 +138,8 @@ const InvoiceController = {
 
   update: async (req, res) => {
     const { invoiceId } = req.params;
-    const data = req.body;
+    const { description, paymentType, paid } = req.body;
+    const data = { description, paymentType, paid };
     const invoice = await Invoice.findByIdAndUpdate(invoiceId, data);
 
     if (invoice === null) {

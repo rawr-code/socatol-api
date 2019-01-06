@@ -1,6 +1,11 @@
 const { Schema, model } = require("mongoose");
 
 const PresentationSchema = new Schema({
+  product: {
+    type: Schema.Types.ObjectId,
+    ref: "Product",
+    required: true
+  },
   name: {
     type: String,
     required: true,
@@ -17,12 +22,6 @@ const PresentationSchema = new Schema({
   },
   stock: {
     type: Number,
-    required: true,
-    default: 0
-  },
-  product: {
-    type: Schema.Types.ObjectId,
-    ref: "Product",
     required: true
   }
 });

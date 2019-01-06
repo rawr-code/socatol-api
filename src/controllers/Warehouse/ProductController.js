@@ -37,11 +37,15 @@ const ProductController = {
       await newProduct.save();
       warehouse.products.push(newProduct);
       await warehouse.save();
-    }
 
-    return res
-      .status(201)
-      .json({ success: true, message: "Registrado con exito!" });
+      return res
+        .status(201)
+        .json({ success: true, message: "Registrado con exito!" });
+    } else {
+      return res
+        .status(404)
+        .json({ success: false, message: "Almacen no encontrado." });
+    }
   },
 
   update: async (req, res) => {

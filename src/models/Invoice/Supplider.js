@@ -5,6 +5,12 @@ const SuppliderSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "PersonalInfo"
   },
+  invoices: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Invoice"
+    }
+  ],
   phone: {
     type: Number,
     required: true

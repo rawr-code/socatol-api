@@ -4,6 +4,16 @@ const ClientSchema = new Schema({
   personalInfo: {
     type: Schema.Types.ObjectId,
     ref: "PersonalInfo"
+  },
+  invoices: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Invoice"
+    }
+  ],
+  phone: {
+    type: Number,
+    required: true
   }
 });
 
