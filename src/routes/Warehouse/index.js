@@ -1,9 +1,7 @@
-const ProductRoutes = require("./ProductRoutes");
-const WarehouseRoutes = require("./WarehouseRoutes");
-const PresentationRoutes = require("./PresentationRoutes");
+const ProductRoutes = require('./ProductRoutes');
+const WarehouseRoutes = require('./WarehouseRoutes');
 
 module.exports = {
-  ProductRoutes,
-  WarehouseRoutes,
-  PresentationRoutes
+	ProductRoutes,
+	WarehouseRoutes
 };
