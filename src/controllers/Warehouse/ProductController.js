@@ -2,7 +2,7 @@ const { Product, Warehouse } = require('../../models/Warehouse');
 
 const ProductController = {
 	getAll: async (req, res) => {
-		const products = await Product.find({}, ['name', 'stock', 'iva', 'price']);
+		const products = await Product.find({}, ['name', 'stock', 'iva', 'price', 'warehouse']);
 
 		return res.status(200).json(products);
 	},

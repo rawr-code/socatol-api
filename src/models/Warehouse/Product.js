@@ -4,7 +4,6 @@ const ProductSchema = new Schema({
 	warehouse: {
 		type: Schema.Types.ObjectId,
 		ref: 'Warehouse',
-		required: true
 	},
 	suppliders: [
 		{
