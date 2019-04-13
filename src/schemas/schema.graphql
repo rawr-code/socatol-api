@@ -1,0 +1,15 @@
+type Cliente {
+  nombre: String
+  apellido: String
+  empresa: String
+  email: String
+}
+
+
+type Query {
+  getCliente : Cliente
+}
+
+type Mutation {
+  crearCliente : Cliente
+}

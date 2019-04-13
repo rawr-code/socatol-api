@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon  src/server.js"
+    "start": "nodemon -e js,graphql src/server.js"
   },
   "repository": "https://github.com/EmmanuelVillegas/socatol-api.git",
   "author": "Emmanuel Villegas <emmanuelvillegas01@gmail.com>",
@@ -15,11 +15,9 @@
     "apollo-server": "^2.4.8",
     "apollo-server-express": "^2.4.8",
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.18.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
     "express-graphql": "^0.7.1",
-    "express-promise-router": "^3.0.3",
     "graphql": "14.1.0",
     "graphql-import": "^0.7.1",
     "graphql-tools": "^4.0.4",
