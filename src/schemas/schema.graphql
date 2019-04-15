@@ -1,15 +1,28 @@
-type Cliente {
-  nombre: String
-  apellido: String
-  empresa: String
-  email: String
+# Types
+type Warehouse {
+  id: ID
+  name: String
+  description: String
+  active: Boolean
 }
 
+# Inputs
+input WarehouseInput {
+  id: ID
+  name: String!
+  description: String
+  active: Boolean!
+}
 
 type Query {
-  getCliente : Cliente
+  # Warehouse Queries
+  getWarehouse(id: ID!): Warehouse
+  getWarehouses(limit: Int, offset: Int): [Warehouse]
 }
 
 type Mutation {
-  crearCliente : Cliente
+  # Warehouse Mutations
+  newWarehouse(input: WarehouseInput): Warehouse
+  updateWarehouse(input: WarehouseInput): Warehouse
+  deleteWarehouse(id: ID!): String
 }
