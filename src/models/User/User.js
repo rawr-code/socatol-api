@@ -1,5 +1,5 @@
-const { Schema, model } = require("mongoose");
-const bcrypt = require("bcryptjs");
+const { Schema, model } = require('mongoose');
+const bcrypt = require('bcryptjs');
 
 const userSchema = new Schema(
   {
@@ -13,26 +13,25 @@ const userSchema = new Schema(
       type: String,
       required: true
     },
-    personalInfo: {
-      type: Schema.Types.ObjectId,
-      ref: "PersonalInfo"
-    },
-    active: Boolean
+    active: {
+      type: Boolean,
+      default: true
+    }
   },
   {
     timestamps: true
   }
 );
 
-userSchema.pre("save", function(next) {
+userSchema.pre('save', function(next) {
   const user = this;
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
   else {
     bcrypt.genSalt(10, (err, salt) => {
-      if (err) console.error("esto es un error de bcrypt: genSalt", err);
+      if (err) console.error('esto es un error de bcrypt: genSalt', err);
       else {
         bcrypt.hash(user.password, salt, (err, hash) => {
-          if (err) console.error("error al generar hash", err);
+          if (err) console.error('error al generar hash', err);
           else {
             user.password = hash;
             next();
@@ -43,4 +42,4 @@ userSchema.pre("save", function(next) {
   }
 });
 
-module.exports = model("User", userSchema);
+module.exports = model('User', userSchema);
