@@ -1,9 +1,25 @@
 // Models
+const Account = require('./models/Account');
 const Warehouse = require('./models/Warehouse');
 const Product = require('./models/Product');
 
 const resolvers = {
   Query: {
+    // Account
+    getAccount: (root, { id }) => {
+      return new Promise((resolve, object) => {
+        Account.findById(id, (error, account) => {
+          if (error) rejects(error);
+          else resolve(account);
+        });
+      });
+    },
+    getAccounts: (root, { limit, offset }) => {
+      return Account.find({})
+        .limit(limit)
+        .skip(offset);
+    },
+
     // Warehouse
     getWarehouse: (root, { id }) => {
       return new Promise((resolve, object) => {
@@ -35,6 +51,40 @@ const resolvers = {
     }
   },
   Mutation: {
+    // Account
+    newAccount: (root, { input }) => {
+      const account = new Account({
+        id: input.id,
+        name: input.name,
+        bank: input.bank,
+        type: input.type,
+        number: input.number
+      });
+
+      return new Promise((resolve, object) => {
+        account.save(error => {
+          if (error) rejects(error);
+          else resolve(account);
+        });
+      });
+    },
+    updateAccount: (root, { input }) => {
+      return new Promise((resolve, object) => {
+        Account.findById({ _id: input.id }, input, (error, account) => {
+          if (error) rejects(error);
+          else resolve(account);
+        });
+      });
+    },
+    deleteAccount: (root, { id }) => {
+      return new Promise((resolve, object) => {
+        Account.findOneAndDelete({ _id: id }, error => {
+          if (error) rejects(error);
+          else resolve('Se elimino correctamente');
+        });
+      });
+    },
+
     // Warehouse
     newWarehouse: (root, { input }) => {
       const warehouse = new Warehouse({

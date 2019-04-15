@@ -12,7 +12,7 @@ const AccountSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ['current', 'saving'],
+      enum: ['CURRENT', 'SAVING'],
       required: true
     },
     number: {

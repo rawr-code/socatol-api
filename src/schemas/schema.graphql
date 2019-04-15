@@ -1,4 +1,15 @@
 # Types
+
+# Treasury Types
+type Account {
+  id: ID
+  name: String
+  bank: String
+  type: AccountTypes
+  number: String
+}
+
+# Inventory Types
 type Warehouse {
   id: ID
   name: String
@@ -17,7 +28,25 @@ type Product {
   warehouse: ID
 }
 
+# Enums
+enum AccountTypes {
+  CURRENT
+  SAVING
+}
+
 # Inputs
+
+# Treasury Inputs
+
+input AccountInput {
+  id: ID
+  name: String!
+  bank: String!
+  type: AccountTypes!
+  number: String!
+}
+
+# Inventory Inputs
 input WarehouseInput {
   id: ID
   name: String!
@@ -37,6 +66,10 @@ input ProductInput {
 }
 
 type Query {
+  # Account
+  getAccount(id: ID!): Account
+  getAccounts(limit: Int, offset: Int): [Account]
+
   # Warehouse
   getWarehouse(id: ID!): Warehouse
   getWarehouses(limit: Int, offset: Int): [Warehouse]
@@ -47,6 +80,11 @@ type Query {
 }
 
 type Mutation {
+  # Account
+  newAccount(input: AccountInput!): Account
+  updateAccount(input: AccountInput!): Account
+  deleteAccount(id: ID!): String
+
   # Warehouse
   newWarehouse(input: WarehouseInput!): Warehouse
   updateWarehouse(input: WarehouseInput!): Warehouse
