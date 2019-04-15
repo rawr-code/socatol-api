@@ -26,14 +26,13 @@ type Invoice {
   paymentType: PaymentTypes
   paid: Boolean
   note: String
-  user: User
+  # user: User
   person: PersonalInformation
   products: [ProductInvoice]
 }
 
 type ProductInvoice {
   product: Product
-  name: String
   quantity: Int
   price: Int
 }
@@ -92,7 +91,6 @@ input UserInput {
   id: ID
   username: String!
   password: String!
-  active: Boolean
 }
 
 input PersonalInformationInput {
