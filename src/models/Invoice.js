@@ -2,27 +2,15 @@ const { Schema, model } = require('mongoose');
 
 const InvoiceSchema = new Schema(
   {
-    user: {
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    },
     number: {
       type: Number,
       unique: true,
       required: true
     },
-    person: {
-      type: Schema.Types.ObjectId,
-      ref: 'PersonalInformation',
-      required: true
-    },
     type: {
       type: String,
-      required: true,
-      enum: ['purchase', 'sale']
-    },
-    description: {
-      type: String
+      enum: ['PURCHASE', 'SALE'],
+      required: true
     },
     dateEmit: {
       type: Date,
@@ -30,11 +18,22 @@ const InvoiceSchema = new Schema(
     },
     paymentType: {
       type: String,
+      enum: ['CASH', 'TRANSFERENCE'],
       required: true
     },
     paid: {
       type: Boolean,
       default: false,
+      required: true
+    },
+    note: String,
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
+    },
+    person: {
+      type: Schema.Types.ObjectId,
+      ref: 'PersonalInformation',
       required: true
     },
     products: [
