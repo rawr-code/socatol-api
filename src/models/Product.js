@@ -15,7 +15,7 @@ const ProductSchema = new Schema(
       required: true
     },
     iva: {
-      type: String,
+      type: Number,
       required: true
     },
     description: String,
@@ -23,7 +23,8 @@ const ProductSchema = new Schema(
 
     warehouse: {
       type: Schema.Types.ObjectId,
-      ref: 'Warehouse'
+      ref: 'Warehouse',
+      required: true
     }
   },
   {

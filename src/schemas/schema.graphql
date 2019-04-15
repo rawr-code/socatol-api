@@ -6,6 +6,17 @@ type Warehouse {
   active: Boolean
 }
 
+type Product {
+  id: ID
+  name: String
+  price: Int
+  stock: Int
+  iva: Int
+  description: String
+  active: Boolean
+  warehouse: ID
+}
+
 # Inputs
 input WarehouseInput {
   id: ID
@@ -14,15 +25,35 @@ input WarehouseInput {
   active: Boolean!
 }
 
+input ProductInput {
+  id: ID
+  name: String!
+  price: Int!
+  stock: Int!
+  iva: Int!
+  description: String!
+  active: Boolean!
+  warehouse: ID!
+}
+
 type Query {
-  # Warehouse Queries
+  # Warehouse
   getWarehouse(id: ID!): Warehouse
   getWarehouses(limit: Int, offset: Int): [Warehouse]
+
+  # Product
+  getProduct(id: ID!): Product
+  getProducts(limit: Int, offset: Int): [Product]
 }
 
 type Mutation {
-  # Warehouse Mutations
-  newWarehouse(input: WarehouseInput): Warehouse
-  updateWarehouse(input: WarehouseInput): Warehouse
+  # Warehouse
+  newWarehouse(input: WarehouseInput!): Warehouse
+  updateWarehouse(input: WarehouseInput!): Warehouse
   deleteWarehouse(id: ID!): String
+
+  # Product
+  newProduct(input: ProductInput!): Product
+  updateProduct(input: ProductInput!): Product
+  deleteProduct(id: ID!): String
 }
