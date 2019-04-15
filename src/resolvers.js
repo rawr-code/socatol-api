@@ -99,6 +99,58 @@ const resolvers = {
     }
   },
   Mutation: {
+    // User
+    newUser: (root, { input }) => {
+      const user = new User({
+        username: input.username,
+        password: input.password
+      });
+
+      return new Promise((resolve, object) => {
+        user.save(error => {
+          if (error) rejects(error);
+          else resolve(user);
+        });
+      });
+    },
+    updateUser: (root, { input }) => {
+      return new Promise((resolve, object) => {
+        User.findOneAndUpdate({ _id: input.id }, input, (error, user) => {
+          if (error) rejects(error);
+          else resolve(user);
+        });
+      });
+    },
+    deleteUser: (root, { id }) => {
+      return new Promise((resolve, object) => {
+        User.findOneAndDelete(id, error => {
+          if (error) rejects(error);
+          else resolve('Se elimino correctamente');
+        });
+      });
+    },
+
+    // Invoice
+    newInvoice: (root, { input }) => {
+      const invoice = new Invoice({
+        number: 0,
+        type: input.type,
+        dateEmit: new Date(),
+        paymentType: input.paymentType,
+        paid: input.paid,
+        note: input.note,
+        person: input.person,
+        products: input.products
+      });
+
+      return new Promise((resolve, object) => {
+        invoice.save(error => {
+          if (error) rejects(error);
+          else resolve(invoice);
+        });
+      });
+    },
+
     // Account
     newAccount: (root, { input }) => {
       const account = new Account({
