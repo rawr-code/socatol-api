@@ -7,6 +7,21 @@ const Product = require('./models/Product');
 
 const resolvers = {
   Query: {
+    // PersonalInformation
+    getPersonalInformation: (root, { id }) => {
+      return new Promise((resolve, object) => {
+        PersonalInformation.findById(id, (error, personalInformation) => {
+          if (error) rejects(error);
+          else resolve(personalInformation);
+        });
+      });
+    },
+    getPersonalInformations: (root, { limit, offset }) => {
+      return PersonalInformation.find({})
+        .limit(limit)
+        .skip(offset);
+    },
+
     // Invoice
     getInvoice: (root, { id }) => {
       return new Promise((resolve, object) => {
