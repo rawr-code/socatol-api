@@ -1,8 +1,10 @@
 const express = require('express');
 const ApolloServer = require('apollo-server-express').ApolloServer;
+const expressPlayground = require('graphql-playground-middleware-express')
+  .default;
+
 const morgan = require('morgan');
 // const cors = require('cors');
-// const passport = require('passport');
 
 const typeDefs = require('./schema');
 const resolvers = require('./resolvers');
@@ -27,6 +29,8 @@ app.use((req, res, next) => {
 app.use(morgan('dev'));
 // app.use(cors());
 server.applyMiddleware({ app });
+
+app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
 // Passport Config
 // app.use(passport.initialize());
