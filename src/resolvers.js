@@ -1,4 +1,5 @@
 // Models
+const User = require('./models/User/User');
 const PersonalInformation = require('./models/PersonalInformation');
 const Invoice = require('./models/Invoice');
 const Account = require('./models/Account');
@@ -7,6 +8,21 @@ const Product = require('./models/Product');
 
 const resolvers = {
   Query: {
+    // User
+    getUser: (root, { id }) => {
+      return new Promise((resolve, object) => {
+        User.findById(id, (error, user) => {
+          if (error) rejects(error);
+          else resolve(user);
+        });
+      });
+    },
+    getUsers: (root, { limit, offset }) => {
+      return User.find({})
+        .limit(limit)
+        .skip(offset);
+    },
+
     // PersonalInformation
     getPersonalInformation: (root, { id }) => {
       return new Promise((resolve, object) => {
