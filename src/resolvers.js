@@ -1,10 +1,27 @@
 // Models
+const PersonalInformation = require('./models/PersonalInformation');
+const Invoice = require('./models/Invoice');
 const Account = require('./models/Account');
 const Warehouse = require('./models/Warehouse');
 const Product = require('./models/Product');
 
 const resolvers = {
   Query: {
+    // Invoice
+    getInvoice: (root, { id }) => {
+      return new Promise((resolve, object) => {
+        Invoice.findById(id, (error, invoice) => {
+          if (error) rejects(error);
+          else resolve(invoice);
+        });
+      });
+    },
+    getInvoices: (root, { limit, offset }) => {
+      return Invoice.find({})
+        .limit(limit)
+        .skip(offset);
+    },
+
     // Account
     getAccount: (root, { id }) => {
       return new Promise((resolve, object) => {
