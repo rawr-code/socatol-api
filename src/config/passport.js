@@ -11,7 +11,7 @@ let opts = {
 
 const User = require('../models/User');
 
-module.exports = passport => {
+export default passport => {
   passport.use(
     new LocalStrategy(
       {

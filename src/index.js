@@ -4,6 +4,8 @@ import expressPlayground from 'graphql-playground-middleware-express';
 import morgan from 'morgan';
 import cors from 'cors';
 
+import connectToMongo from './config/mongoose';
+
 import typeDefs from './schema';
 import resolvers from './resolvers';
 
@@ -28,4 +30,4 @@ app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 // require('./config/passport')(passport);
 
 // Connect to database and run app
-require('./config/mongoose')(app);
+connectToMongo(app);

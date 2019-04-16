@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import config from '../config';
 
-module.exports = server =>
+export default server =>
   mongoose
     .connect(config.db, {
       useCreateIndex: true,
@@ -9,10 +9,13 @@ module.exports = server =>
       useNewUrlParser: true
     })
     .then(db => {
-      console.log('DataBase is conected!');
+      console.log('\nDATABASE STATUS: conected\n');
       server.listen(config.port, () => {
         console.log(
-          `Server listening on https://localhost:${config.port}/graphql`
+          `Server listening on https://localhost:${
+            config.port
+          }\nGraphQL Apollo Server on https://localhost:${config.port}/graphql
+          `
         );
       });
     })
