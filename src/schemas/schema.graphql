@@ -34,7 +34,11 @@ type Invoice {
 type ProductInvoice {
   product: Product
   quantity: Int
-  price: Int
+}
+
+type PersonInvoices {
+  person: PersonalInformation
+  invoices: [Invoice]
 }
 
 # Treasury Types
@@ -62,7 +66,7 @@ type Product {
   iva: Int
   description: String
   active: Boolean
-  warehouse: ID
+  warehouse: Warehouse
 }
 
 # Enums
@@ -109,8 +113,8 @@ input InvoiceInput {
   paymentType: PaymentTypes!
   paid: Boolean!
   note: String
-  person: ID!
-  products: [ProductInvoiceInput!]
+  person: InvoicePersonInput!
+  products: [InvoiceProductInput!]
 }
 
 input InvoiceUpdateInput {
@@ -119,10 +123,19 @@ input InvoiceUpdateInput {
   note: String
 }
 
-input ProductInvoiceInput {
+input InvoicePersonInput {
+  id: ID
+  dni: Int!
+  firstname: String!
+  lastname: String!
+  address: String!
+  phone: String!
+  email: String
+}
+
+input InvoiceProductInput {
   product: ID!
   quantity: Int!
-  price: Int!
 }
 
 # Treasury Inputs
@@ -166,6 +179,10 @@ type Query {
   getInvoice(id: ID!): Invoice
   getInvoices(limit: Int, offset: Int): [Invoice]
 
+  # Client
+  getClient(id: ID!): PersonInvoices
+  getClients(limit: Int, offset: Int): [PersonalInformation]
+
   # Account
   getAccount(id: ID!): Account
   getAccounts(limit: Int, offset: Int): [Account]
@@ -186,11 +203,9 @@ type Mutation {
   deleteUser(id: ID!): String
 
   # PersonalInformation
-  newPersonalInformation(input: PersonalInformationInput!): PersonalInformation
   updatePersonalInformation(
     input: PersonalInformationInput!
   ): PersonalInformation
-  deletePersonalInformation(id: ID!): String
 
   # Invoice
   newInvoice(input: InvoiceInput!): Invoice

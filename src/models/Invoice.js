@@ -1,10 +1,10 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
 const InvoiceSchema = new Schema(
   {
     number: {
       type: Number,
-      unique: true,
+      // unique: true,
       required: true
     },
     type: {
@@ -38,9 +38,11 @@ const InvoiceSchema = new Schema(
     },
     products: [
       {
-        type: Schema.Types.ObjectId,
-        ref: 'Product',
-        price: {
+        product: {
+          type: Schema.Types.ObjectId,
+          ref: 'Product'
+        },
+        quantity: {
           type: Number,
           required: true
         }
@@ -52,4 +54,4 @@ const InvoiceSchema = new Schema(
   }
 );
 
-module.exports = model('Invoice', InvoiceSchema);
+export default model('Invoice', InvoiceSchema);

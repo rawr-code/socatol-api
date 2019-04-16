@@ -3,7 +3,7 @@
   "version": "2.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon -e js,graphql --exec babel-node src/server.js",
+    "start": "nodemon -e js,graphql --exec babel-node src/index.js",
     "build": "babel index.js -d dist",
     "serve": "node dist/index.js"
   },

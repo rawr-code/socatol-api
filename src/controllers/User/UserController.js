@@ -1,15 +1,15 @@
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcryptjs");
-const config = require("../../config");
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcryptjs';
+import config from '../../config';
 
-const { User } = require("../../models/User");
+import User from '../../models/User';
 
 async function Register(req, res) {
   try {
     const user = await User.findOne({ username: req.body.email });
     if (user) {
       return res.status(400).json({
-        email: "Este correo ya esta registrado"
+        email: 'Este correo ya esta registrado'
       });
     } else {
       const newUser = new User({
@@ -29,7 +29,7 @@ async function Login(req, res) {
     const { email, password } = req.body;
     const user = await User.findOne({ username: email });
     if (!user) {
-      return res.status(404).json({ message: "usuario no encontrado!" });
+      return res.status(404).json({ message: 'usuario no encontrado!' });
     } else {
       const match = await bcrypt.compare(password, user.password);
       if (match) {
@@ -41,7 +41,7 @@ async function Login(req, res) {
           payload,
           config.JWT_SECRET,
           {
-            expiresIn: "12h"
+            expiresIn: '12h'
           },
           (err, token) => {
             if (err) console.error(`Error al generar TOKEN: ${err}`);
@@ -55,7 +55,7 @@ async function Login(req, res) {
       } else {
         return res
           .status(400)
-          .json({ message: "Usuario o contraseña incorrecto." });
+          .json({ message: 'Usuario o contraseña incorrecto.' });
       }
     }
   } catch (err) {

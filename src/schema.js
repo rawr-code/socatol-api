@@ -1,4 +1,4 @@
-const importSchema = require('graphql-import').importSchema;
+import { importSchema } from 'graphql-import';
 const schema = importSchema('src/schemas/schema.graphql');
 
-module.exports = schema;
+export default schema;

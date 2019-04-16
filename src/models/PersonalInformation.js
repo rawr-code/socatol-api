@@ -1,10 +1,10 @@
-const { Schema, model } = require('mongoose');
+import { Schema, model } from 'mongoose';
 
 const PersonalInformationSchema = new Schema(
   {
     dni: {
       type: Number,
-      unique: true,
+      // unique: true,
       required: true
     },
     firstname: {
@@ -30,4 +30,4 @@ const PersonalInformationSchema = new Schema(
   }
 );
 
-module.exports = model('PersonalInformation', PersonalInformationSchema);
+export default model('PersonalInformation', PersonalInformationSchema);

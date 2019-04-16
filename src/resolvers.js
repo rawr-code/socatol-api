@@ -1,10 +1,10 @@
 // Models
-const User = require('./models/User/User');
-const PersonalInformation = require('./models/PersonalInformation');
-const Invoice = require('./models/Invoice');
-const Account = require('./models/Account');
-const Warehouse = require('./models/Warehouse');
-const Product = require('./models/Product');
+import User from './models/User';
+import PersonalInformation from './models/PersonalInformation';
+import Invoice from './models/Invoice';
+import Account from './models/Account';
+import Warehouse from './models/Warehouse';
+import Product from './models/Product';
 
 const resolvers = {
   Query: {
@@ -48,9 +48,55 @@ const resolvers = {
       });
     },
     getInvoices: (root, { limit, offset }) => {
-      return Invoice.find({})
+      return (
+        Invoice.find({})
+          .populate('user')
+          .populate('person')
+          .populate('products.product')
+          // .populate({
+          // path: 'products.product',
+          // model: 'Product'
+          // path: 'products',
+          // model: 'InvoiceProduct',
+          // populate: {
+          //   path: 'product',
+          //   model: 'Product'
+          // }
+          // })
+          .limit(limit)
+          .skip(offset)
+      );
+    },
+
+    // Client
+    getClient: async (root, { id }) => {
+      const person = await PersonalInformation.findById(id);
+      const type = 'SALE';
+      const invoices = await Invoice.find({ person, type }).populate(
+        'products.product'
+      );
+
+      return {
+        person,
+        invoices
+      };
+    },
+    getClients: async (root, { limit, offset }) => {
+      const persons = await PersonalInformation.find({})
         .limit(limit)
         .skip(offset);
+      const clients = await persons.map(async person => {
+        const salesInvoice = await Invoice.findOne({
+          person: person._id,
+          type: 'SALE'
+        });
+
+        if (salesInvoice) {
+          return person;
+        }
+      });
+
+      return clients;
     },
 
     // Account
@@ -94,6 +140,7 @@ const resolvers = {
     },
     getProducts: (root, { limit, offset }) => {
       return Product.find({})
+        .populate('warehouse')
         .limit(limit)
         .skip(offset);
     }
@@ -131,24 +178,48 @@ const resolvers = {
     },
 
     // Invoice
-    newInvoice: (root, { input }) => {
-      const invoice = new Invoice({
-        number: 0,
-        type: input.type,
-        dateEmit: new Date(),
-        paymentType: input.paymentType,
-        paid: input.paid,
-        note: input.note,
-        person: input.person,
-        products: input.products
-      });
+    newInvoice: async (root, { input }) => {
+      try {
+        const { id, ...personInfo } = input.person;
+        let person;
+        let products;
 
-      return new Promise((resolve, object) => {
-        invoice.save(error => {
-          if (error) rejects(error);
-          else resolve(invoice);
+        if (id) {
+          person = await PersonalInformation.findById(id);
+          console.log('persona encontrada');
+          if (!person) {
+            throw new Error('Persona no encontrada');
+          }
+        } else {
+          person = new PersonalInformation(personInfo);
+          console.log('persona nueva');
+          await person.save();
+        }
+        // if (input.products && input.products.length > 0) {
+        //   products = await input.products.map(item => {
+        //     const product = new InvoiceProduct(item);
+        //     product.save();
+        //     return product;
+        //   });
+        // }
+
+        const invoice = new Invoice({
+          number: 0,
+          type: input.type,
+          dateEmit: new Date(),
+          paymentType: input.paymentType,
+          paid: input.paid,
+          note: input.note,
+          person,
+          products: input.products
         });
-      });
+
+        await invoice.save();
+
+        return invoice;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Account
@@ -259,4 +330,4 @@ const resolvers = {
   }
 };
 
-module.exports = resolvers;
+export default resolvers;
