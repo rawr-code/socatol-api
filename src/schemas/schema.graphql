@@ -1,5 +1,12 @@
 # Types
 
+# DB Message Types
+
+type DBMessage {
+  success: Boolean
+  error: Boolean
+  message: String
+}
 # User Types
 type User {
   id: ID
@@ -62,8 +69,7 @@ type Product {
   id: ID
   name: String
   price: Int
-  stock: Int
-  iva: Int
+  quantity: Int
   description: String
   active: Boolean
   warehouse: Warehouse
@@ -159,8 +165,7 @@ input ProductInput {
   id: ID
   name: String!
   price: Int!
-  stock: Int!
-  iva: Int!
+  quantity: Int!
   description: String!
   active: Boolean!
   warehouse: ID!
@@ -223,7 +228,7 @@ type Mutation {
   deleteWarehouse(id: ID!): String
 
   # Product
-  newProduct(input: ProductInput!): Product
-  updateProduct(input: ProductInput!): Product
+  newProduct(input: ProductInput!): DBMessage
+  updateProduct(input: ProductInput!): DBMessage
   deleteProduct(id: ID!): String
 }

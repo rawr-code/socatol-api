@@ -130,13 +130,13 @@ const resolvers = {
     },
 
     // Product
-    getProduct: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Product.findById(id, (error, product) => {
-          if (error) rejects(error);
-          else resolve(product);
-        });
-      });
+    getProduct: async (root, { id }) => {
+      try {
+        const product = await Product.findById(id).populate('warehouse');
+        return product;
+      } catch (error) {
+        console.log(error);
+      }
     },
     getProducts: (root, { limit, offset }) => {
       return Product.find({})
@@ -297,8 +297,7 @@ const resolvers = {
       const product = new Product({
         name: input.name,
         price: input.price,
-        stock: input.stock,
-        iva: input.iva,
+        quantity: input.quantity,
         description: input.description,
         active: input.active,
         warehouse: input.warehouse
@@ -307,17 +306,27 @@ const resolvers = {
       return new Promise((resolve, object) => {
         product.save(error => {
           if (error) rejects(error);
-          else resolve(product);
+          else
+            resolve({
+              message: 'Guardado con exito',
+              success: true,
+              error: false
+            });
         });
       });
     },
-    updateProduct: (root, { input }) => {
-      return new Promise((resolve, object) => {
-        Product.findOneAndUpdate({ _id: input.id }, input, (error, product) => {
-          if (error) rejects(error);
-          else resolve(product);
-        });
-      });
+    updateProduct: async (root, { input }) => {
+      try {
+        await Product.findOneAndUpdate({ _id: input.id }, input);
+
+        return {
+          message: 'Guardado con exito',
+          success: true,
+          error: false
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
     deleteProduct: (root, { id }) => {
       return new Promise((resolve, object) => {

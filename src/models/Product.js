@@ -10,11 +10,7 @@ const ProductSchema = new Schema(
       type: Number,
       required: true
     },
-    stock: {
-      type: Number,
-      required: true
-    },
-    iva: {
+    quantity: {
       type: Number,
       required: true
     },
