@@ -2,7 +2,7 @@
 import User from './models/User';
 import PersonalInformation from './models/PersonalInformation';
 import Invoice from './models/Invoice';
-import Account from './models/Account';
+import BankAccount from './models/BankAccount';
 import Warehouse from './models/Warehouse';
 import Product from './models/Product';
 
@@ -115,23 +115,23 @@ const resolvers = {
       }
     },
 
-    // Account
-    getAccount: async (root, { id }) => {
+    // BankAccount
+    getBankAccount: async (root, { id }) => {
       try {
-        const account = await Account.findById(id);
+        const bankAccount = await BankAccount.findById(id);
 
-        return account;
+        return bankAccount;
       } catch (error) {
         console.log(error);
       }
     },
-    getAccounts: async (root, { limit, offset }) => {
+    getBankAccounts: async (root, { limit, offset }) => {
       try {
-        const accounts = await Account.find({})
+        const bankAccounts = await BankAccount.find({})
           .limit(limit)
           .skip(offset);
 
-        return accounts;
+        return bankAccounts;
       } catch (error) {
         console.log(error);
       }
@@ -274,10 +274,10 @@ const resolvers = {
       }
     },
 
-    // Account
-    newAccount: async (root, { input }) => {
+    // BankAccount
+    newBankAccount: async (root, { input }) => {
       try {
-        const account = new Account({
+        const bankAccount = new BankAccount({
           id: input.id,
           name: input.name,
           bank: input.bank,
@@ -285,7 +285,7 @@ const resolvers = {
           number: input.number
         });
 
-        await account.save();
+        await bankAccount.save();
 
         return {
           success: true,
@@ -296,9 +296,9 @@ const resolvers = {
         console.log(error);
       }
     },
-    updateAccount: async (root, { input }) => {
+    updateBankAccount: async (root, { input }) => {
       try {
-        await Account.findOneAndUpdate({ _id: input.id }, input);
+        await BankAccount.findOneAndUpdate({ _id: input.id }, input);
 
         return {
           success: true,
@@ -309,9 +309,9 @@ const resolvers = {
         console.log(error);
       }
     },
-    deleteAccount: async (root, { id }) => {
+    deleteBankAccount: async (root, { id }) => {
       try {
-        await Account.findOneAndDelete({ _id: id });
+        await BankAccount.findOneAndDelete({ _id: id });
 
         return {
           success: true,

@@ -49,11 +49,11 @@ type PersonInvoices {
 }
 
 # Treasury Types
-type Account {
+type BankAccount {
   id: ID
   name: String
   bank: String
-  type: AccountTypes
+  type: BankAccountTypes
   number: String
 }
 
@@ -89,7 +89,7 @@ enum PaymentTypes {
 }
 
 # Treasury Enums
-enum AccountTypes {
+enum BankAccountTypes {
   CURRENT
   SAVING
 }
@@ -145,11 +145,11 @@ input InvoiceProductInput {
 }
 
 # Treasury Inputs
-input AccountInput {
+input BankAccountInput {
   id: ID
   name: String!
   bank: String!
-  type: AccountTypes!
+  type: BankAccountTypes!
   number: String!
 }
 
@@ -188,9 +188,9 @@ type Query {
   getClient(id: ID!): PersonInvoices
   getClients(limit: Int, offset: Int): [PersonalInformation]
 
-  # Account
-  getAccount(id: ID!): Account
-  getAccounts(limit: Int, offset: Int): [Account]
+  # BankAccount
+  getBankAccount(id: ID!): BankAccount
+  getBankAccounts(limit: Int, offset: Int): [BankAccount]
 
   # Warehouse
   getWarehouse(id: ID!): Warehouse
@@ -215,10 +215,10 @@ type Mutation {
   updateInvoice(input: InvoiceUpdateInput!): DBMessage
   deleteInvoice(id: ID!): DBMessage
 
-  # Account
-  newAccount(input: AccountInput!): DBMessage
-  updateAccount(input: AccountInput!): DBMessage
-  deleteAccount(id: ID!): DBMessage
+  # BankAccount
+  newBankAccount(input: BankAccountInput!): DBMessage
+  updateBankAccount(input: BankAccountInput!): DBMessage
+  deleteBankAccount(id: ID!): DBMessage
 
   # Warehouse
   newWarehouse(input: WarehouseInput!): DBMessage
