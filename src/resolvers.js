@@ -282,7 +282,8 @@ const resolvers = {
           name: input.name,
           bank: input.bank,
           type: input.type,
-          number: input.number
+          number: input.number,
+          active: input.active
         });
 
         await bankAccount.save();

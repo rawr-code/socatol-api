@@ -7,6 +7,7 @@ type DBMessage {
   error: Boolean
   message: String
 }
+
 # User Types
 type User {
   id: ID
@@ -55,6 +56,7 @@ type BankAccount {
   bank: String
   type: BankAccountTypes
   number: String
+  active: Boolean
 }
 
 # Inventory Types
@@ -151,6 +153,7 @@ input BankAccountInput {
   bank: String!
   type: BankAccountTypes!
   number: String!
+  active: Boolean!
 }
 
 # Inventory Inputs
