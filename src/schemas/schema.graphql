@@ -203,32 +203,30 @@ type Query {
 
 type Mutation {
   # User
-  newUser(input: UserInput!): User
-  updateUser(input: UserInput!): User
-  deleteUser(id: ID!): String
+  newUser(input: UserInput!): DBMessage
+  updateUser(input: UserInput!): DBMessage
+  deleteUser(id: ID!): DBMessage
 
   # PersonalInformation
-  updatePersonalInformation(
-    input: PersonalInformationInput!
-  ): PersonalInformation
+  updatePersonalInformation(input: PersonalInformationInput!): DBMessage
 
   # Invoice
-  newInvoice(input: InvoiceInput!): Invoice
-  updateInvoice(input: InvoiceUpdateInput!): Invoice
-  deleteInvoice(id: ID!): String
+  newInvoice(input: InvoiceInput!): DBMessage
+  updateInvoice(input: InvoiceUpdateInput!): DBMessage
+  deleteInvoice(id: ID!): DBMessage
 
   # Account
-  newAccount(input: AccountInput!): Account
-  updateAccount(input: AccountInput!): Account
-  deleteAccount(id: ID!): String
+  newAccount(input: AccountInput!): DBMessage
+  updateAccount(input: AccountInput!): DBMessage
+  deleteAccount(id: ID!): DBMessage
 
   # Warehouse
-  newWarehouse(input: WarehouseInput!): Warehouse
-  updateWarehouse(input: WarehouseInput!): Warehouse
-  deleteWarehouse(id: ID!): String
+  newWarehouse(input: WarehouseInput!): DBMessage
+  updateWarehouse(input: WarehouseInput!): DBMessage
+  deleteWarehouse(id: ID!): DBMessage
 
   # Product
   newProduct(input: ProductInput!): DBMessage
   updateProduct(input: ProductInput!): DBMessage
-  deleteProduct(id: ID!): String
+  deleteProduct(id: ID!): DBMessage
 }

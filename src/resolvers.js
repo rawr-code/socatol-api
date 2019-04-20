@@ -9,172 +9,224 @@ import Product from './models/Product';
 const resolvers = {
   Query: {
     // User
-    getUser: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        User.findById(id, (error, user) => {
-          if (error) rejects(error);
-          else resolve(user);
-        });
-      });
+    getUser: async (root, { id }) => {
+      try {
+        const user = await User.findById(id);
+
+        return user;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    getUsers: (root, { limit, offset }) => {
-      return User.find({})
-        .limit(limit)
-        .skip(offset);
+    getUsers: async (root, { limit, offset }) => {
+      try {
+        const users = await User.find({})
+          .limit(limit)
+          .skip(offset);
+        return users;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // PersonalInformation
-    getPersonalInformation: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        PersonalInformation.findById(id, (error, personalInformation) => {
-          if (error) rejects(error);
-          else resolve(personalInformation);
-        });
-      });
+    getPersonalInformation: async (root, { id }) => {
+      try {
+        const personInfo = await PersonalInformation.findById(id);
+
+        return personInfo;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    getPersonalInformations: (root, { limit, offset }) => {
-      return PersonalInformation.find({})
-        .limit(limit)
-        .skip(offset);
+    getPersonalInformations: async (root, { limit, offset }) => {
+      try {
+        const personInfos = await PersonalInformation.find({})
+          .limit(limit)
+          .skip(offset);
+
+        return personInfos;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Invoice
-    getInvoice: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Invoice.findById(id, (error, invoice) => {
-          if (error) rejects(error);
-          else resolve(invoice);
-        });
-      });
+    getInvoice: async (root, { id }) => {
+      try {
+        const invoice = await Invoice.findById(id);
+
+        return invoice;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    getInvoices: (root, { limit, offset }) => {
-      return (
-        Invoice.find({})
+    getInvoices: async (root, { limit, offset }) => {
+      try {
+        const invoices = await Invoice.find({})
           .populate('user')
           .populate('person')
           .populate('products.product')
-          // .populate({
-          // path: 'products.product',
-          // model: 'Product'
-          // path: 'products',
-          // model: 'InvoiceProduct',
-          // populate: {
-          //   path: 'product',
-          //   model: 'Product'
-          // }
-          // })
           .limit(limit)
-          .skip(offset)
-      );
+          .skip(offset);
+
+        return invoices;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Client
     getClient: async (root, { id }) => {
-      const person = await PersonalInformation.findById(id);
-      const type = 'SALE';
-      const invoices = await Invoice.find({ person, type }).populate(
-        'products.product'
-      );
+      try {
+        const person = await PersonalInformation.findById(id);
+        const type = 'SALE';
+        const invoices = await Invoice.find({ person, type }).populate(
+          'products.product'
+        );
 
-      return {
-        person,
-        invoices
-      };
+        return {
+          person,
+          invoices
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
     getClients: async (root, { limit, offset }) => {
-      const persons = await PersonalInformation.find({})
-        .limit(limit)
-        .skip(offset);
-      const clients = await persons.map(async person => {
-        const salesInvoice = await Invoice.findOne({
-          person: person._id,
-          type: 'SALE'
+      try {
+        const persons = await PersonalInformation.find({})
+          .limit(limit)
+          .skip(offset);
+        const clients = await persons.map(async person => {
+          const salesInvoice = await Invoice.findOne({
+            person: person._id,
+            type: 'SALE'
+          });
+
+          if (salesInvoice) {
+            return person;
+          }
         });
 
-        if (salesInvoice) {
-          return person;
-        }
-      });
-
-      return clients;
+        return clients;
+      } catch (error) {
+        console.log(erro);
+      }
     },
 
     // Account
-    getAccount: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Account.findById(id, (error, account) => {
-          if (error) rejects(error);
-          else resolve(account);
-        });
-      });
+    getAccount: async (root, { id }) => {
+      try {
+        const account = await Account.findById(id);
+
+        return account;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    getAccounts: (root, { limit, offset }) => {
-      return Account.find({})
-        .limit(limit)
-        .skip(offset);
+    getAccounts: async (root, { limit, offset }) => {
+      try {
+        const accounts = await Account.find({})
+          .limit(limit)
+          .skip(offset);
+
+        return accounts;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Warehouse
-    getWarehouse: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Warehouse.findById(id, (error, warehouse) => {
-          if (error) rejects(error);
-          else resolve(warehouse);
-        });
-      });
+    getWarehouse: async (root, { id }) => {
+      try {
+        const warehouse = await Warehouse.findById(id);
+
+        return warehouse;
+      } catch (error) {
+        console.log(error);
+      }
     },
-    getWarehouses: (root, { limit, offset }) => {
-      return Warehouse.find({})
-        .limit(limit)
-        .skip(offset);
+    getWarehouses: async (root, { limit, offset }) => {
+      try {
+        const warehouses = await Warehouse.find({})
+          .limit(limit)
+          .skip(offset);
+
+        return warehouses;
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Product
     getProduct: async (root, { id }) => {
       try {
         const product = await Product.findById(id).populate('warehouse');
+
         return product;
       } catch (error) {
         console.log(error);
       }
     },
-    getProducts: (root, { limit, offset }) => {
-      return Product.find({})
-        .populate('warehouse')
-        .limit(limit)
-        .skip(offset);
+    getProducts: async (root, { limit, offset }) => {
+      try {
+        const products = await Product.find({})
+          .populate('warehouse')
+          .limit(limit)
+          .skip(offset);
+
+        return products;
+      } catch (error) {
+        console.log(error);
+      }
     }
   },
   Mutation: {
     // User
-    newUser: (root, { input }) => {
-      const user = new User({
-        username: input.username,
-        password: input.password
-      });
+    newUser: async (root, { input }) => {
+      try {
+        const user = new User({
+          username: input.username,
+          password: input.password
+        });
 
-      return new Promise((resolve, object) => {
-        user.save(error => {
-          if (error) rejects(error);
-          else resolve(user);
-        });
-      });
+        await user.save();
+
+        return {
+          success: true,
+          error: false,
+          message: 'Guardado con exito'
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
-    updateUser: (root, { input }) => {
-      return new Promise((resolve, object) => {
-        User.findOneAndUpdate({ _id: input.id }, input, (error, user) => {
-          if (error) rejects(error);
-          else resolve(user);
-        });
-      });
+    updateUser: async (root, { input }) => {
+      try {
+        await User.findOneAndUpdate({ _id: input.id }, input);
+
+        return {
+          success: true,
+          error: false,
+          message: 'Guardado con exito'
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
-    deleteUser: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        User.findOneAndDelete(id, error => {
-          if (error) rejects(error);
-          else resolve('Se elimino correctamente');
-        });
-      });
+    deleteUser: async (root, { id }) => {
+      try {
+        await User.findOneAndDelete(id);
+
+        return {
+          success: true,
+          error: false,
+          message: 'Eliminado con exito'
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Invoice
@@ -223,97 +275,123 @@ const resolvers = {
     },
 
     // Account
-    newAccount: (root, { input }) => {
-      const account = new Account({
-        id: input.id,
-        name: input.name,
-        bank: input.bank,
-        type: input.type,
-        number: input.number
-      });
+    newAccount: async (root, { input }) => {
+      try {
+        const account = new Account({
+          id: input.id,
+          name: input.name,
+          bank: input.bank,
+          type: input.type,
+          number: input.number
+        });
 
-      return new Promise((resolve, object) => {
-        account.save(error => {
-          if (error) rejects(error);
-          else resolve(account);
-        });
-      });
+        await account.save();
+
+        return {
+          success: true,
+          error: false,
+          message: 'Guardado con exito'
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
-    updateAccount: (root, { input }) => {
-      return new Promise((resolve, object) => {
-        Account.findById({ _id: input.id }, input, (error, account) => {
-          if (error) rejects(error);
-          else resolve(account);
-        });
-      });
+    updateAccount: async (root, { input }) => {
+      try {
+        await Account.findOneAndUpdate({ _id: input.id }, input);
+
+        return {
+          success: true,
+          error: false,
+          message: 'Guardado con exito'
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
-    deleteAccount: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Account.findOneAndDelete({ _id: id }, error => {
-          if (error) rejects(error);
-          else resolve('Se elimino correctamente');
-        });
-      });
+    deleteAccount: async (root, { id }) => {
+      try {
+        await Account.findOneAndDelete({ _id: id });
+
+        return {
+          success: true,
+          error: false,
+          message: 'Eliminado con exito'
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Warehouse
-    newWarehouse: (root, { input }) => {
-      const warehouse = new Warehouse({
-        name: input.name,
-        description: input.description,
-        active: input.active
-      });
+    newWarehouse: async (root, { input }) => {
+      try {
+        const warehouse = await new Warehouse({
+          name: input.name,
+          description: input.description,
+          active: input.active
+        });
 
-      return new Promise((resolve, object) => {
-        warehouse.save(error => {
-          if (error) rejects(error);
-          else resolve(warehouse);
-        });
-      });
+        await warehouse.save();
+
+        return {
+          message: 'Guardado con exito',
+          success: true,
+          error: false
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
-    updateWarehouse: (root, { input }) => {
-      return new Promise((resolve, object) => {
-        Warehouse.findOneAndUpdate(
-          { _id: input.id },
-          input,
-          (error, warehouse) => {
-            if (error) rejects(error);
-            else resolve(warehouse);
-          }
-        );
-      });
+    updateWarehouse: async (root, { input }) => {
+      try {
+        await Warehouse.findOneAndUpdate({ _id: input.id }, input);
+
+        return {
+          message: 'Guardado con exito',
+          success: true,
+          error: false
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
-    deleteWarehouse: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Warehouse.findOneAndDelete({ _id: id }, error => {
-          if (error) rejects(error);
-          else resolve('Se elimino correctamente');
-        });
-      });
+    deleteWarehouse: async (root, { id }) => {
+      try {
+        await Warehouse.findOneAndDelete({ _id: id });
+
+        return {
+          message: 'Eliminado con exito',
+          success: true,
+          error: false
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
 
     // Product
-    newProduct: (root, { input }) => {
-      const product = new Product({
-        name: input.name,
-        price: input.price,
-        quantity: input.quantity,
-        description: input.description,
-        active: input.active,
-        warehouse: input.warehouse
-      });
-
-      return new Promise((resolve, object) => {
-        product.save(error => {
-          if (error) rejects(error);
-          else
-            resolve({
-              message: 'Guardado con exito',
-              success: true,
-              error: false
-            });
+    newProduct: async (root, { input }) => {
+      try {
+        const product = new Product({
+          name: input.name,
+          price: input.price,
+          quantity: input.quantity,
+          description: input.description,
+          active: input.active,
+          warehouse: input.warehouse
         });
-      });
+
+        await product.save();
+
+        return {
+          message: 'Guardado con exito',
+          success: true,
+          error: false
+        };
+      } catch (error) {
+        console.log(error);
+      }
     },
     updateProduct: async (root, { input }) => {
       try {
@@ -328,13 +406,18 @@ const resolvers = {
         console.log(error);
       }
     },
-    deleteProduct: (root, { id }) => {
-      return new Promise((resolve, object) => {
-        Product.findOneAndDelete({ _id: id }, error => {
-          if (error) rejects(error);
-          else resolve('Se elimino correctamente');
-        });
-      });
+    deleteProduct: async (root, { id }) => {
+      try {
+        await Product.findOneAndDelete({ _id: id });
+
+        return {
+          message: 'Eliminado con exito',
+          success: true,
+          error: false
+        };
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };

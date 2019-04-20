@@ -25,9 +25,5 @@ server.applyMiddleware({ app });
 
 app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
-// Passport Config
-// app.use(passport.initialize());
-// require('./config/passport')(passport);
-
 // Connect to database and run app
 connectToMongo(app);
