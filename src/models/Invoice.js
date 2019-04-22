@@ -21,11 +21,6 @@ const InvoiceSchema = new Schema(
       enum: ['CASH', 'TRANSFERENCE'],
       required: true
     },
-    paid: {
-      type: Boolean,
-      default: false,
-      required: true
-    },
     note: String,
     user: {
       type: Schema.Types.ObjectId,
@@ -41,6 +36,14 @@ const InvoiceSchema = new Schema(
         product: {
           type: Schema.Types.ObjectId,
           ref: 'Product'
+        },
+        name: {
+          type: String,
+          required: true
+        },
+        price: {
+          type: Number,
+          required: true
         },
         quantity: {
           type: Number,

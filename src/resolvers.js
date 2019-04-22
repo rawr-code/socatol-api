@@ -230,14 +230,15 @@ const resolvers = {
     },
 
     // Invoice
-    newInvoice: async (root, { input }) => {
+    newInvoice: async (root, { input, type }) => {
       try {
-        const { id, ...personInfo } = input.person;
+        console.log(input);
         let person;
-        let products;
 
-        if (id) {
-          person = await PersonalInformation.findById(id);
+        const { id: personId, ...personInfo } = input.person;
+
+        if (personId) {
+          person = await PersonalInformation.findById(personId);
           console.log('persona encontrada');
           if (!person) {
             throw new Error('Persona no encontrada');
@@ -247,20 +248,12 @@ const resolvers = {
           console.log('persona nueva');
           await person.save();
         }
-        // if (input.products && input.products.length > 0) {
-        //   products = await input.products.map(item => {
-        //     const product = new InvoiceProduct(item);
-        //     product.save();
-        //     return product;
-        //   });
-        // }
 
         const invoice = new Invoice({
           number: 0,
-          type: input.type,
+          type,
           dateEmit: new Date(),
           paymentType: input.paymentType,
-          paid: input.paid,
           note: input.note,
           person,
           products: input.products
@@ -268,9 +261,27 @@ const resolvers = {
 
         await invoice.save();
 
-        return invoice;
+        if (type === 'SALE') {
+          person.invoices.sale.push(invoice);
+          await person.save();
+        } else if (type === 'PURCHASE') {
+          person.invoices.purchase.push(invoice);
+          await person.save();
+        }
+
+        // return invoice;
+        return {
+          success: true,
+          error: false,
+          message: 'Guardado con exito'
+        };
       } catch (error) {
         console.log(error);
+        return {
+          success: false,
+          error: true,
+          message: 'Error al guardar'
+        };
       }
     },
 
@@ -374,16 +385,21 @@ const resolvers = {
     // Product
     newProduct: async (root, { input }) => {
       try {
+        let warehouse = await Warehouse.findById(input.warehouse);
         const product = new Product({
           name: input.name,
           price: input.price,
-          quantity: input.quantity,
+          stock: input.stock,
           description: input.description,
           active: input.active,
-          warehouse: input.warehouse
+          warehouse
         });
 
         await product.save();
+
+        warehouse.products.push(product);
+
+        await warehouse.save();
 
         return {
           message: 'Guardado con exito',

@@ -7,7 +7,14 @@ const WarehouseSchema = new Schema(
       required: true
     },
     description: String,
-    active: Boolean
+    active: Boolean,
+
+    products: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+      }
+    ]
   },
   {
     timestamps: true

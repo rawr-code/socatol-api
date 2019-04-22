@@ -32,7 +32,6 @@ type Invoice {
   type: InvoiceTypes
   dateEmit: String
   paymentType: PaymentTypes
-  paid: Boolean
   note: String
   # user: User
   person: PersonalInformation
@@ -41,6 +40,8 @@ type Invoice {
 
 type ProductInvoice {
   product: Product
+  name: String
+  price: Int
   quantity: Int
 }
 
@@ -71,7 +72,7 @@ type Product {
   id: ID
   name: String
   price: Int
-  quantity: Int
+  stock: Int
   description: String
   active: Boolean
   warehouse: Warehouse
@@ -117,9 +118,7 @@ input PersonalInformationInput {
 
 # Invoice Inputs
 input InvoiceInput {
-  type: InvoiceTypes!
   paymentType: PaymentTypes!
-  paid: Boolean!
   note: String
   person: InvoicePersonInput!
   products: [InvoiceProductInput!]
@@ -127,22 +126,23 @@ input InvoiceInput {
 
 input InvoiceUpdateInput {
   paymentType: PaymentTypes!
-  paid: Boolean!
   note: String
 }
 
 input InvoicePersonInput {
   id: ID
-  dni: Int!
-  firstname: String!
-  lastname: String!
-  address: String!
-  phone: String!
+  dni: Int
+  firstname: String
+  lastname: String
+  address: String
+  phone: String
   email: String
 }
 
 input InvoiceProductInput {
   product: ID!
+  name: String!
+  price: Int!
   quantity: Int!
 }
 
@@ -168,7 +168,7 @@ input ProductInput {
   id: ID
   name: String!
   price: Int!
-  quantity: Int!
+  stock: Int!
   description: String!
   active: Boolean!
   warehouse: ID!
@@ -214,7 +214,7 @@ type Mutation {
   updatePersonalInformation(input: PersonalInformationInput!): DBMessage
 
   # Invoice
-  newInvoice(input: InvoiceInput!): DBMessage
+  newInvoice(input: InvoiceInput!, type: InvoiceTypes!): DBMessage
   updateInvoice(input: InvoiceUpdateInput!): DBMessage
   deleteInvoice(id: ID!): DBMessage
 

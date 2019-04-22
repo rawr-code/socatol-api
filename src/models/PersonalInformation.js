@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 const PersonalInformationSchema = new Schema(
   {
     dni: {
-      type: Number,
+      type: String,
       // unique: true,
       required: true
     },
@@ -23,7 +23,22 @@ const PersonalInformationSchema = new Schema(
       type: String,
       required: true
     },
-    email: String
+    email: String,
+
+    invoices: {
+      sale: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Invoice'
+        }
+      ],
+      purchase: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Invoice'
+        }
+      ]
+    }
   },
   {
     timeStmaps: true
