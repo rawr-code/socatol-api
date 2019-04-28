@@ -23,6 +23,12 @@ type PersonalInformation {
   address: String
   phone: String
   email: String
+  invoices: PersonalInvoices
+}
+
+type PersonalInvoices {
+  sale: [Invoice]
+  purchase: [Invoice]
 }
 
 # Invoice Types
@@ -39,7 +45,6 @@ type Invoice {
 }
 
 type ProductInvoice {
-  product: Product
   name: String
   price: Int
   quantity: Int
@@ -66,6 +71,7 @@ type Warehouse {
   name: String
   description: String
   active: Boolean
+  products: [Product]
 }
 
 type Product {
@@ -124,11 +130,6 @@ input InvoiceInput {
   products: [InvoiceProductInput!]
 }
 
-input InvoiceUpdateInput {
-  paymentType: PaymentTypes!
-  note: String
-}
-
 input InvoicePersonInput {
   id: ID
   dni: Int
@@ -141,11 +142,13 @@ input InvoicePersonInput {
 
 input InvoiceProductInput {
   product: ID!
-  name: String!
-  price: Int!
   quantity: Int!
 }
 
+input InvoiceUpdateInput {
+  paymentType: PaymentTypes!
+  note: String
+}
 # Treasury Inputs
 input BankAccountInput {
   id: ID

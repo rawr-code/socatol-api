@@ -32,7 +32,9 @@ const resolvers = {
     // PersonalInformation
     getPersonalInformation: async (root, { id }) => {
       try {
-        const personInfo = await PersonalInformation.findById(id);
+        const personInfo = await PersonalInformation.findById(id)
+          .populate('invoices.sale')
+          .populate('invoices.purchase');
 
         return personInfo;
       } catch (error) {
@@ -42,6 +44,8 @@ const resolvers = {
     getPersonalInformations: async (root, { limit, offset }) => {
       try {
         const personInfos = await PersonalInformation.find({})
+          .populate('invoices.sale')
+          .populate('invoices.purchase')
           .limit(limit)
           .skip(offset);
 
@@ -54,7 +58,7 @@ const resolvers = {
     // Invoice
     getInvoice: async (root, { id }) => {
       try {
-        const invoice = await Invoice.findById(id);
+        const invoice = await Invoice.findById(id).populate('person');
 
         return invoice;
       } catch (error) {
@@ -66,7 +70,6 @@ const resolvers = {
         const invoices = await Invoice.find({})
           .populate('user')
           .populate('person')
-          .populate('products.product')
           .limit(limit)
           .skip(offset);
 
@@ -140,7 +143,7 @@ const resolvers = {
     // Warehouse
     getWarehouse: async (root, { id }) => {
       try {
-        const warehouse = await Warehouse.findById(id);
+        const warehouse = await Warehouse.findById(id).populate('products');
 
         return warehouse;
       } catch (error) {
@@ -150,6 +153,7 @@ const resolvers = {
     getWarehouses: async (root, { limit, offset }) => {
       try {
         const warehouses = await Warehouse.find({})
+          .populate('products')
           .limit(limit)
           .skip(offset);
 
@@ -232,8 +236,8 @@ const resolvers = {
     // Invoice
     newInvoice: async (root, { input, type }) => {
       try {
-        console.log(input);
         let person;
+        let products;
 
         const { id: personId, ...personInfo } = input.person;
 
@@ -249,6 +253,20 @@ const resolvers = {
           await person.save();
         }
 
+        if (input.products) {
+          products = input.products.map(async item => {
+            const { id, name, price } = await Product.findById(item.product);
+            const result = {
+              product: id,
+              name,
+              price,
+              quantity: item.quantity
+            };
+            return result;
+          });
+          products = await Promise.all(products);
+        }
+
         const invoice = new Invoice({
           number: 0,
           type,
@@ -256,7 +274,7 @@ const resolvers = {
           paymentType: input.paymentType,
           note: input.note,
           person,
-          products: input.products
+          products
         });
 
         await invoice.save();
