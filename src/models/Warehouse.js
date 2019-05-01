@@ -7,7 +7,6 @@ const WarehouseSchema = new Schema(
       required: true
     },
     description: String,
-    active: Boolean,
 
     products: [
       {

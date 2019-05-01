@@ -7,11 +7,15 @@ const PersonalInformationSchema = new Schema(
       // unique: true,
       required: true
     },
-    firstname: {
+    name: {
       type: String,
       required: true
     },
-    lastname: {
+    state: {
+      type: String,
+      required: true
+    },
+    municipality: {
       type: String,
       required: true
     },

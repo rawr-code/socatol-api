@@ -10,12 +10,15 @@ const ProductSchema = new Schema(
       type: Number,
       required: true
     },
+    iva: {
+      type: Number,
+      required: true
+    },
     stock: {
       type: Number,
       required: true
     },
     description: String,
-    active: Boolean,
 
     warehouse: {
       type: Schema.Types.ObjectId,

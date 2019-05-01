@@ -18,7 +18,7 @@ const InvoiceSchema = new Schema(
     },
     paymentType: {
       type: String,
-      enum: ['CASH', 'TRANSFERENCE'],
+      enum: ['EFECTIVO', 'TRANSFERENCIA'],
       required: true
     },
     note: String,
