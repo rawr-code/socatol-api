@@ -41,13 +41,35 @@ const resolvers = {
         console.log(error);
       }
     },
-    getPersonalInformations: async (root, { limit, offset }) => {
+    getPersonalInformations: async (root, { limit, offset, type }) => {
       try {
         const personInfos = await PersonalInformation.find({})
           .populate('invoices.sale')
           .populate('invoices.purchase')
           .limit(limit)
           .skip(offset);
+
+        if (type) {
+          if (type === 'CLIENT') {
+            let clients = [];
+            await personInfos.map(async person => {
+              if (person.invoices.sale.length > 0) {
+                clients.push(person);
+              }
+            });
+
+            return clients;
+          } else if (type === 'SUPPLIER') {
+            let suppliders = [];
+            await personInfos.forEach(async person => {
+              if (person.invoices.purchase.length > 0) {
+                suppliders.push(person);
+              }
+            });
+
+            return suppliders;
+          }
+        }
 
         return personInfos;
       } catch (error) {
@@ -65,56 +87,26 @@ const resolvers = {
         console.log(error);
       }
     },
-    getInvoices: async (root, { limit, offset }) => {
+    getInvoices: async (root, { limit, offset, type }) => {
       try {
-        const invoices = await Invoice.find({})
-          .populate('user')
-          .populate('person')
-          .limit(limit)
-          .skip(offset);
+        let invoices;
+        if (type) {
+          invoices = await Invoice.find({ type })
+            .populate('user')
+            .populate('person')
+            .limit(limit)
+            .skip(offset);
+        } else {
+          invoices = await Invoice.find({})
+            .populate('user')
+            .populate('person')
+            .limit(limit)
+            .skip(offset);
+        }
 
         return invoices;
       } catch (error) {
         console.log(error);
-      }
-    },
-
-    // Client
-    getClient: async (root, { id }) => {
-      try {
-        const person = await PersonalInformation.findById(id);
-        const type = 'SALE';
-        const invoices = await Invoice.find({ person, type }).populate(
-          'products.product'
-        );
-
-        return {
-          person,
-          invoices
-        };
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    getClients: async (root, { limit, offset }) => {
-      try {
-        const persons = await PersonalInformation.find({})
-          .limit(limit)
-          .skip(offset);
-        const clients = await persons.map(async person => {
-          const salesInvoice = await Invoice.findOne({
-            person: person._id,
-            type: 'SALE'
-          });
-
-          if (salesInvoice) {
-            return person;
-          }
-        });
-
-        return clients;
-      } catch (error) {
-        console.log(erro);
       }
     },
 

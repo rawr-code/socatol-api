@@ -98,6 +98,12 @@ const typeDefs = gql`
 
   # Enums
 
+  # User Enums
+  enum PersonalInformationTypes {
+    CLIENT
+    SUPPLIER
+  }
+
   # Invoice Enums
   enum InvoiceTypes {
     PURCHASE
@@ -199,15 +205,15 @@ const typeDefs = gql`
 
     # PersonalInformation
     getPersonalInformation(id: ID!): PersonalInformation
-    getPersonalInformations(limit: Int, offset: Int): [PersonalInformation]
+    getPersonalInformations(
+      limit: Int
+      offset: Int
+      type: PersonalInformationTypes
+    ): [PersonalInformation]
 
     # Invoice
     getInvoice(id: ID!): Invoice
-    getInvoices(limit: Int, offset: Int): [Invoice]
-
-    # Client
-    getClient(id: ID!): PersonInvoices
-    getClients(limit: Int, offset: Int): [PersonalInformation]
+    getInvoices(limit: Int, offset: Int, type: InvoiceTypes): [Invoice]
 
     # BankAccount
     getBankAccount(id: ID!): BankAccount
