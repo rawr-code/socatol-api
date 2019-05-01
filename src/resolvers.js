@@ -235,13 +235,11 @@ const resolvers = {
 
         if (personId) {
           person = await PersonalInformation.findById(personId);
-          console.log('persona encontrada');
           if (!person) {
             throw new Error('Persona no encontrada');
           }
         } else {
           person = new PersonalInformation(personInfo);
-          console.log('persona nueva');
           await person.save();
         }
 
@@ -350,8 +348,7 @@ const resolvers = {
       try {
         const warehouse = await new Warehouse({
           name: input.name,
-          description: input.description,
-          active: input.active
+          description: input.description
         });
 
         await warehouse.save();
@@ -399,9 +396,9 @@ const resolvers = {
         const product = new Product({
           name: input.name,
           price: input.price,
+          iva: input.iva,
           stock: input.stock,
           description: input.description,
-          active: input.active,
           warehouse
         });
 

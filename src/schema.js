@@ -25,8 +25,9 @@ const typeDefs = gql`
   type PersonalInformation {
     id: ID
     dni: Int
-    firstname: String
-    lastname: String
+    name: String
+    state: String
+    municipality: String
     address: String
     phone: String
     email: String
@@ -82,7 +83,6 @@ const typeDefs = gql`
     id: ID
     name: String
     description: String
-    active: Boolean
     products: [Product]
   }
 
@@ -90,9 +90,9 @@ const typeDefs = gql`
     id: ID
     name: String
     price: Int
+    iva: Int
     stock: Int
     description: String
-    active: Boolean
     warehouse: Warehouse
   }
 
@@ -111,8 +111,8 @@ const typeDefs = gql`
   }
 
   enum PaymentTypes {
-    CASH
-    TRANSFERENCE
+    EFECTIVO
+    TRANSFERENCIA
   }
 
   # Treasury Enums
@@ -133,8 +133,9 @@ const typeDefs = gql`
   input PersonalInformationInput {
     id: ID
     dni: Int!
-    firstname: String!
-    lastname: String!
+    name: String!
+    state: String!
+    municipality: String!
     address: String!
     phone: String!
     email: String
@@ -151,8 +152,9 @@ const typeDefs = gql`
   input InvoicePersonInput {
     id: ID
     dni: Int
-    firstname: String
-    lastname: String
+    name: String
+    state: String
+    municipality: String
     address: String
     phone: String
     email: String
@@ -182,16 +184,15 @@ const typeDefs = gql`
     id: ID
     name: String!
     description: String
-    active: Boolean!
   }
 
   input ProductInput {
     id: ID
     name: String!
     price: Int!
+    iva: Int!
     stock: Int!
     description: String!
-    active: Boolean!
     warehouse: ID!
   }
 
