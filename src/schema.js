@@ -161,7 +161,9 @@ const typeDefs = gql`
   }
 
   input InvoiceProductInput {
-    product: ID!
+    product: ID
+    name: String
+    price: Int
     quantity: Int!
   }
 

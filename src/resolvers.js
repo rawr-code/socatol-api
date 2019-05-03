@@ -93,7 +93,7 @@ const resolvers = {
         if (type) {
           invoices = await Invoice.find({ type })
             .populate('user')
-            .populate('person')
+            .populate('person', 'name')
             .limit(limit)
             .skip(offset);
         } else {
@@ -229,7 +229,7 @@ const resolvers = {
     newInvoice: async (root, { input, type }) => {
       try {
         let person;
-        let products;
+        let { products } = input;
 
         const { id: personId, ...personInfo } = input.person;
 
@@ -243,19 +243,29 @@ const resolvers = {
           await person.save();
         }
 
-        if (input.products) {
-          products = input.products.map(async item => {
-            const { id, name, price } = await Product.findById(item.product);
-            const result = {
-              product: id,
-              name,
-              price,
+        products = products.map(async item => {
+          if (item.product) {
+            return item;
+          } else {
+            const product = new Product({
+              name: item.name,
+              price: item.price,
+              stock: item.quantity,
+              warehouse: '5cc9bba99fbcea1f207bc11e',
+              iva: 0
+            });
+            await product.save();
+
+            return {
+              product,
+              name: product.name,
+              price: product.price,
               quantity: item.quantity
             };
-            return result;
-          });
-          products = await Promise.all(products);
-        }
+          }
+        });
+
+        products = await Promise.all(products);
 
         const invoice = new Invoice({
           number: 0,
@@ -277,7 +287,6 @@ const resolvers = {
           await person.save();
         }
 
-        // return invoice;
         return {
           success: true,
           error: false,

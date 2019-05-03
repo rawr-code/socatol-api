@@ -22,6 +22,7 @@ const InvoiceSchema = new Schema(
       required: true
     },
     note: String,
+
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User'
