@@ -1,6 +1,32 @@
-import { gql } from 'apollo-server';
+const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+  # Configuration Types
+
+  type Configuration {
+    iva: ConfigurationIVA
+    invoice: ConfigurationInvoice
+  }
+
+  # Configuration Product Types
+  type ConfigurationIVA {
+    product: Int
+  }
+
+  # Configuration Invoice Types
+  type ConfigurationInvoice {
+    sale: ConfigurationSaleInvoice
+    purchase: ConfigurationPurchaseInvoice
+  }
+
+  type ConfigurationSaleInvoice {
+    number: Int
+  }
+
+  type ConfigurationPurchaseInvoice {
+    number: Int
+  }
+
   # File Types
   type File {
     filename: String!
@@ -52,6 +78,14 @@ const typeDefs = gql`
     products: [ProductInvoice]
   }
 
+  type InvoiceList {
+    id: ID
+    number: Int
+    dateEmit: String
+    paymentType: PaymentTypes
+    person: String
+  }
+
   type ProductInvoice {
     name: String
     price: Int
@@ -90,7 +124,7 @@ const typeDefs = gql`
     id: ID
     name: String
     price: Int
-    iva: Int
+    iva: String
     stock: Int
     description: String
     warehouse: Warehouse
@@ -122,6 +156,20 @@ const typeDefs = gql`
   }
 
   # Inputs
+
+  # Configuration Inputs
+
+  input ConfigurationProductIVA {
+    iva: Int!
+  }
+
+  input ConfigurationSaleInvoiceNumber {
+    number: Int!
+  }
+
+  input ConfigurationPurchaseInvoiceNumber {
+    number: Int!
+  }
 
   # User Inputs
   input UserInput {
@@ -171,6 +219,7 @@ const typeDefs = gql`
     paymentType: PaymentTypes!
     note: String
   }
+
   # Treasury Inputs
   input BankAccountInput {
     id: ID
@@ -192,13 +241,15 @@ const typeDefs = gql`
     id: ID
     name: String!
     price: Int!
-    iva: Int!
+    iva: String!
     stock: Int!
-    description: String!
     warehouse: ID!
   }
 
   type Query {
+    # Configuration
+
+    getConfiguration: Configuration
     # File
     uploads: [File]
 
@@ -216,7 +267,7 @@ const typeDefs = gql`
 
     # Invoice
     getInvoice(id: ID!): Invoice
-    getInvoices(limit: Int, offset: Int, type: InvoiceTypes): [Invoice]
+    getInvoices(limit: Int, offset: Int, type: InvoiceTypes): [InvoiceList]
 
     # BankAccount
     getBankAccount(id: ID!): BankAccount
@@ -232,6 +283,15 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    # Configuration
+    updateConfigurationProductIVA(input: ConfigurationProductIVA!): String!
+    updateConfigurationSaleInvoiceNumber(
+      input: ConfigurationSaleInvoiceNumber!
+    ): String!
+    updateConfigurationPurchaseInvoiceNumber(
+      input: ConfigurationPurchaseInvoiceNumber!
+    ): String!
+
     # File
     singleUpload(file: Upload!): File!
 
@@ -265,4 +325,4 @@ const typeDefs = gql`
   }
 `;
 
-export default typeDefs;
+module.exports = typeDefs;

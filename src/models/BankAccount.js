@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const BankAccountSchema = new Schema(
   {
@@ -26,4 +26,4 @@ const BankAccountSchema = new Schema(
   }
 );
 
-export default model('BankAccount', BankAccountSchema);
+module.exports = model('BankAccount', BankAccountSchema);

@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const InvoiceSchema = new Schema(
   {
@@ -58,4 +58,4 @@ const InvoiceSchema = new Schema(
   }
 );
 
-export default model('Invoice', InvoiceSchema);
+module.exports = model('Invoice', InvoiceSchema);

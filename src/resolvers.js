@@ -1,13 +1,80 @@
+const fs = require('fs');
+const mkdirp = require('mkdirp');
+const shortid = require('shortid');
+const xlsx = require('xlsx');
+
 // Models
-import User from './models/User';
-import PersonalInformation from './models/PersonalInformation';
-import Invoice from './models/Invoice';
-import BankAccount from './models/BankAccount';
-import Warehouse from './models/Warehouse';
-import Product from './models/Product';
+const Configuration = require('./models/Configuration');
+const User = require('./models/User');
+const PersonalInformation = require('./models/PersonalInformation');
+const Invoice = require('./models/Invoice');
+const BankAccount = require('./models/BankAccount');
+const Warehouse = require('./models/Warehouse');
+const Product = require('./models/Product');
+
+const UPLOAD_DIR = './extractos-bancarios';
+
+const storeFS = ({ stream, filename }) => {
+  // Ensure upload directory exists.
+  mkdirp.sync(UPLOAD_DIR);
+
+  const id = shortid.generate();
+  const path = `${UPLOAD_DIR}/${id}-${filename}`;
+  return new Promise((resolve, reject) =>
+    stream
+      .on('error', error => {
+        if (stream.truncated)
+          // Delete the truncated file.
+          fs.unlinkSync(path);
+        reject(error);
+      })
+      .pipe(fs.createWriteStream(path))
+      .on('error', error => reject(error))
+      .on('finish', () => resolve({ id, path }))
+  );
+};
+
+const processUpload = async upload => {
+  const { createReadStream, filename, mimetype } = await upload;
+  let stream = createReadStream();
+  let buffers = [];
+  stream.on('data', function(data) {
+    buffers.push(data);
+  });
+  stream.on('end', function() {
+    var buffer = Buffer.concat(buffers);
+    var workbook = xlsx.read(buffer); // works
+    console.log(workbook);
+    let sheet_name_list = workbook.SheetNames;
+    let xlData = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+    console.log(xlData);
+  });
+
+  // console.log(stream);
+  // const { id, path } = await storeFS({ stream, filename });
+  // console.log({ id, path });
+
+  // const workbook = xlsx.readFile(stream);
+  // let sheet_name_list = workbook.SheetNames;
+  // let xlData = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
+  // // console.log(xlData);
+  // console.log(Object.keys(xlData[0]));
+
+  return upload;
+  // return storeDB({ id, filename, mimetype, path });
+};
 
 const resolvers = {
   Query: {
+    // Configuration
+    getConfiguration: async () => {
+      try {
+        const config = await Configuration.findOne();
+        return config;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     // User
     getUser: async (root, { id }) => {
       try {
@@ -96,6 +163,14 @@ const resolvers = {
             .populate('person', 'name')
             .limit(limit)
             .skip(offset);
+
+          invoices = invoices.map(invoice => ({
+            id: invoice.id,
+            number: invoice.number,
+            dateEmit: invoice.dateEmit,
+            paymentType: invoice.paymentType,
+            person: invoice.person.name
+          }));
         } else {
           invoices = await Invoice.find({})
             .populate('user')
@@ -179,6 +254,89 @@ const resolvers = {
     }
   },
   Mutation: {
+    // Configuration
+    updateConfigurationProductIVA: async (root, { input }) => {
+      let searchConfig = await Configuration.findOne();
+      console.log(searchConfig);
+      if (searchConfig) {
+        searchConfig.iva.product = input.iva;
+        await searchConfig.save();
+      } else {
+        const newConfig = new Configuration({
+          iva: {
+            product: input.iva
+          },
+          invoice: {
+            sale: {
+              number: 0
+            },
+            purchase: {
+              number: 0
+            }
+          }
+        });
+        await newConfig.save();
+        console.log(newConfig);
+      }
+
+      return 'Exito';
+    },
+    updateConfigurationSaleInvoiceNumber: async (root, { input }) => {
+      let searchConfig = await Configuration.findOne();
+      console.log(searchConfig);
+      if (searchConfig) {
+        searchConfig.invoice.sale.number = input.number;
+        await searchConfig.save();
+      } else {
+        const newConfig = new Configuration({
+          iva: {
+            product: 0
+          },
+          invoice: {
+            sale: {
+              number: input.number
+            },
+            purchase: {
+              number: 0
+            }
+          }
+        });
+        await newConfig.save();
+        console.log(newConfig);
+      }
+
+      return 'Exito';
+    },
+    updateConfigurationPurchaseInvoiceNumber: async (root, { input }) => {
+      let searchConfig = await Configuration.findOne();
+      console.log(searchConfig);
+      if (searchConfig) {
+        searchConfig.invoice.purchase.number = input.number;
+        await searchConfig.save();
+      } else {
+        const newConfig = new Configuration({
+          iva: {
+            product: 0
+          },
+          invoice: {
+            sale: {
+              number: 0
+            },
+            purchase: {
+              number: input.number
+            }
+          }
+        });
+        await newConfig.save();
+        console.log(newConfig);
+      }
+
+      return 'Exito';
+    },
+
+    // Upload Files
+    singleUpload: async (root, { file }) => processUpload(file),
+
     // User
     newUser: async (root, { input }) => {
       try {
@@ -228,6 +386,16 @@ const resolvers = {
     // Invoice
     newInvoice: async (root, { input, type }) => {
       try {
+        let config = await Configuration.findOne();
+        if (!config) {
+          return {
+            message: 'Debe configurar el sistema antes de usarlo',
+            success: false,
+            error: true
+          };
+        }
+
+        let invoiceNumber;
         let person;
         let { products } = input;
 
@@ -252,8 +420,9 @@ const resolvers = {
               price: item.price,
               stock: item.quantity,
               warehouse: '5cc9bba99fbcea1f207bc11e',
-              iva: 0
+              iva: config.iva.product
             });
+
             await product.save();
 
             return {
@@ -267,8 +436,14 @@ const resolvers = {
 
         products = await Promise.all(products);
 
+        if (type === 'PURCHASE') {
+          invoiceNumber = config.invoice.purchase.number;
+        } else if (type === 'SALE') {
+          invoiceNumber = config.invoice.sale.number;
+        }
+
         const invoice = new Invoice({
-          number: 0,
+          number: invoiceNumber,
           type,
           dateEmit: new Date(),
           paymentType: input.paymentType,
@@ -280,9 +455,13 @@ const resolvers = {
         await invoice.save();
 
         if (type === 'SALE') {
+          config.invoice.sale.number += 1;
+          await config.save();
           person.invoices.sale.push(invoice);
           await person.save();
         } else if (type === 'PURCHASE') {
+          config.invoice.purchase.number += 1;
+          await config.save();
           person.invoices.purchase.push(invoice);
           await person.save();
         }
@@ -407,7 +586,6 @@ const resolvers = {
           price: input.price,
           iva: input.iva,
           stock: input.stock,
-          description: input.description,
           warehouse
         });
 
@@ -455,4 +633,4 @@ const resolvers = {
   }
 };
 
-export default resolvers;
+module.exports = resolvers;

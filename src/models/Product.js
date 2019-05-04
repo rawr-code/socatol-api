@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const ProductSchema = new Schema(
   {
@@ -11,14 +11,13 @@ const ProductSchema = new Schema(
       required: true
     },
     iva: {
-      type: Number,
+      type: String,
       required: true
     },
     stock: {
       type: Number,
       required: true
     },
-    description: String,
 
     warehouse: {
       type: Schema.Types.ObjectId,
@@ -31,4 +30,4 @@ const ProductSchema = new Schema(
   }
 );
 
-export default model('Product', ProductSchema);
+module.exports = model('Product', ProductSchema);

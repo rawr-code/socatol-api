@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+const { Schema, model } = require('mongoose');
 
 const WarehouseSchema = new Schema(
   {
@@ -6,7 +6,10 @@ const WarehouseSchema = new Schema(
       type: String,
       required: true
     },
-    description: String,
+    description: {
+      type: String,
+      required: true
+    },
 
     products: [
       {
@@ -20,4 +23,4 @@ const WarehouseSchema = new Schema(
   }
 );
 
-export default model('Warehouse', WarehouseSchema);
+module.exports = model('Warehouse', WarehouseSchema);

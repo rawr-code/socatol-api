@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import config from '../config';
+const mongoose = require('mongoose');
+const config = require('../config');
 
-export default server =>
+module.exports = server =>
   mongoose
     .connect(config.db, {
       useCreateIndex: true,

@@ -1,21 +1,14 @@
 {
-  "name": "socatol-api",
-  "version": "2.0.0",
-  "main": "server.js",
+  "name": "socatol-api-graphql",
+  "version": "3.0.0",
+  "main": "src/index.js",
   "scripts": {
-    "start": "nodemon -e js,graphql --exec babel-node src/index.js",
-    "build": "babel index.js -d dist",
-    "serve": "node dist/index.js"
+    "start": "nodemon src/index.js"
   },
   "repository": "https://github.com/EmmanuelVillegas/socatol-api.git",
   "author": "Emmanuel Villegas <emmanuelvillegas01@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "@babel/cli": "^7.4.3",
-    "@babel/core": "^7.4.3",
-    "@babel/node": "^7.2.2",
-    "@babel/preset-env": "^7.4.3",
-    "graphql-playground-middleware-express": "^1.7.12",
     "nodemon": "^1.18.7"
   },
   "dependencies": {
@@ -24,16 +17,16 @@
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "express-fileupload": "^1.1.4",
     "express-graphql": "^0.7.1",
     "graphql": "14.1.0",
-    "graphql-import": "^0.7.1",
-    "graphql-tools": "^4.0.4",
     "jsonwebtoken": "^8.4.0",
+    "mkdirp": "^0.5.1",
     "mongoose": "^5.3.14",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "shortid": "^2.2.14",
+    "xlsx": "^0.14.3"
   }
 }

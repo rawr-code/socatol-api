@@ -1,15 +1,17 @@
-import express from 'express';
-import { createServer } from 'http';
-import { ApolloServer } from 'apollo-server-express';
-import expressPlayground from 'graphql-playground-middleware-express';
+const express = require('express');
+const cors = require('cors');
+const { createServer } = require('http');
+const { ApolloServer } = require('apollo-server-express');
 
-import morgan from 'morgan';
-import cors from 'cors';
+// For Development
+const morgan = require('morgan');
 
-import connectToMongo from './config/mongoose';
+// Configurations
+const connectToMongo = require('./config/mongoose');
 
-import typeDefs from './schema';
-import resolvers from './resolvers';
+// GraphQL
+const typeDefs = require('./schema');
+const resolvers = require('./resolvers');
 
 // Initialization
 const app = express();
@@ -43,8 +45,6 @@ server.applyMiddleware({ app });
 
 const httpServer = createServer(app);
 server.installSubscriptionHandlers(httpServer);
-
-app.get('/playground', expressPlayground({ endpoint: '/graphql' }));
 
 // Connect to database and run app
 connectToMongo(httpServer);
