@@ -4,16 +4,18 @@ module.exports = gql`
   scalar Upload
 
   type File {
-    filename: String!
-    mimetype: String!
-    encoding: String!
+    filename: String
+    mimetype: String
+    encoding: String
+    path: String
   }
 
   extend type Query {
-    uploads: [File]
+    getFile(id: ID!): File
+    getFiles(limit: Int, offset: Int): [File]
   }
 
   extend type Mutation {
-    singleUpload(file: Upload!): File!
+    singleUpload(file: Upload!): File
   }
 `;

@@ -12,7 +12,7 @@ const BankAccountSchema = new Schema(
     },
     type: {
       type: String,
-      enum: ['CURRENT', 'SAVING'],
+      enum: ['CORRIENTE', 'AHORRO'],
       required: true
     },
     number: {

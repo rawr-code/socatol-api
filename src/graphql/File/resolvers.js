@@ -3,9 +3,9 @@ const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 const xlsx = require('xlsx');
 
-// const { model } = require('../../models');
+const { File } = require('../../db/models');
 
-const UPLOAD_DIR = './extractos-bancarios';
+const UPLOAD_DIR = './docs';
 
 const storeFS = ({ stream, filename }) => {
   // Ensure upload directory exists.
@@ -28,37 +28,66 @@ const storeFS = ({ stream, filename }) => {
 };
 
 const processUpload = async upload => {
-  const { createReadStream, filename, mimetype } = await upload;
-  let stream = createReadStream();
-  let buffers = [];
-  stream.on('data', function(data) {
-    buffers.push(data);
-  });
-  stream.on('end', function() {
-    var buffer = Buffer.concat(buffers);
-    var workbook = xlsx.read(buffer); // works
-    console.log(workbook);
-    let sheet_name_list = workbook.SheetNames;
-    let xlData = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-    console.log(xlData);
-  });
+  try {
+    const { createReadStream, filename, mimetype, encoding } = await upload;
+    console.log(upload);
+    let stream = createReadStream();
+    let buffers = [];
 
-  // console.log(stream);
-  // const { id, path } = await storeFS({ stream, filename });
-  // console.log({ id, path });
+    stream.on('data', function(data) {
+      buffers.push(data);
+    });
 
-  // const workbook = xlsx.readFile(stream);
-  // let sheet_name_list = workbook.SheetNames;
-  // let xlData = xlsx.utils.sheet_to_json(workbook.Sheets[sheet_name_list[0]]);
-  // // console.log(xlData);
-  // console.log(Object.keys(xlData[0]));
+    stream.on('end', function() {
+      var buffer = Buffer.concat(buffers);
+      var workbook = xlsx.read(buffer);
+      // console.log(workbook);
+      let sheet_name_list = workbook.SheetNames;
+      let xlData = xlsx.utils.sheet_to_json(
+        workbook.Sheets[sheet_name_list[0]]
+      );
+      // console.log(xlData);
+    });
 
-  return upload;
-  // return storeDB({ id, filename, mimetype, path });
+    const { path } = await storeFS({ stream, filename });
+
+    const file = new File({
+      filename,
+      mimetype,
+      encoding,
+      path
+    });
+
+    await file.save();
+    console.log(file);
+    return file;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = {
-  Query: {},
+  Query: {
+    getFile: async (root, { id }) => {
+      try {
+        const files = await File.findById(id);
+        return files;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getFiles: async (root, { limit, offset }) => {
+      try {
+        const files = await File.find({})
+          .limit(limit)
+          .skip(offset);
+
+        return files;
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  },
   Mutation: {
     singleUpload: async (root, { file }) => processUpload(file)
   }

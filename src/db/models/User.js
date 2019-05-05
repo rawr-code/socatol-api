@@ -6,12 +6,16 @@ const userSchema = new Schema(
     username: {
       type: String,
       unique: true,
-      lowercase: true,
       required: true
     },
     password: {
       type: String,
       required: true
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ['ADMINISTRADOR', 'CONSULTOR', 'CONTABLE']
     },
     active: {
       type: Boolean,

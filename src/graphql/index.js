@@ -6,6 +6,7 @@ const BankAccount = require('./BankAccount');
 const Invoice = require('./Invoice');
 const PersonalInformation = require('./PersonalInformation');
 const File = require('./File');
+const User = require('./User');
 
 const modules = [
   Configuration,
@@ -14,7 +15,8 @@ const modules = [
   BankAccount,
   Invoice,
   PersonalInformation,
-  File
+  File,
+  User
 ];
 
 module.exports = { modules };

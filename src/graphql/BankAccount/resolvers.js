@@ -27,7 +27,6 @@ module.exports = {
     newBankAccount: async (root, { input }) => {
       try {
         const bankAccount = new BankAccount({
-          id: input.id,
           name: input.name,
           bank: input.bank,
           type: input.type,
@@ -37,11 +36,7 @@ module.exports = {
 
         await bankAccount.save();
 
-        return {
-          success: true,
-          error: false,
-          message: 'Guardado con exito'
-        };
+        return 'Guardado con exito';
       } catch (error) {
         console.log(error);
       }
