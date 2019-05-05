@@ -1,4 +1,4 @@
-// const { model } = require('../../models');
+// const { model } = require('../../db/models');
 
 module.exports = {
   Query: {},

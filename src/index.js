@@ -7,17 +7,15 @@ const { ApolloServer } = require('apollo-server-express');
 const morgan = require('morgan');
 
 // Configurations
-const connectToMongo = require('./config/mongoose');
+const connectToMongo = require('./db/config/mongoose');
 
 // GraphQL
-const typeDefs = require('./schema');
-const resolvers = require('./resolvers');
+const { modules } = require('./graphql');
 
 // Initialization
 const app = express();
 const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+  modules,
   context: async ({ req, connection }) => {
     if (connection) {
       // check connection for metadata

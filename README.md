@@ -1,3 +1,3 @@
-#socatol-api
+#SOCATOL GRAPHQL API
 
-(Node + Express + MongoDB) --> ES7
+✨ (Node + Express + GraphQL + MongoDB) ✨
