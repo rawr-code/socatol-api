@@ -7,7 +7,6 @@ module.exports = gql`
     bank: String
     type: BankAccountTypes
     number: String
-    active: Boolean
   }
 
   enum BankAccountTypes {
@@ -21,7 +20,6 @@ module.exports = gql`
     bank: String!
     type: BankAccountTypes!
     number: String!
-    active: Boolean!
   }
 
   extend type Query {

@@ -46,7 +46,7 @@ const processUpload = async upload => {
       let xlData = xlsx.utils.sheet_to_json(
         workbook.Sheets[sheet_name_list[0]]
       );
-      // console.log(xlData);
+      console.log(xlData);
     });
 
     const { path } = await storeFS({ stream, filename });

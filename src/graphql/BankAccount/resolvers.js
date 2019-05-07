@@ -30,8 +30,7 @@ module.exports = {
           name: input.name,
           bank: input.bank,
           type: input.type,
-          number: input.number,
-          active: input.active
+          number: input.number
         });
 
         await bankAccount.save();

@@ -18,8 +18,7 @@ const BankAccountSchema = new Schema(
     number: {
       type: String,
       required: true
-    },
-    active: Boolean
+    }
   },
   {
     timestamps: true
