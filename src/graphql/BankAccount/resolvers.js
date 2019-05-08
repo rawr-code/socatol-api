@@ -1,4 +1,4 @@
-const { BankAccount } = require('../../db/models');
+const { BankAccount, BankTransaction } = require('../../db/models');
 
 module.exports = {
   Query: {
@@ -7,6 +7,17 @@ module.exports = {
         const bankAccount = await BankAccount.findById(id);
 
         return bankAccount;
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    getBankAccountTransactions: async (root, { id, limit, offset }) => {
+      try {
+        const transactions = await BankTransaction.find({ bankAccount: id })
+          .limit(limit)
+          .skip(offset);
+
+        return transactions;
       } catch (error) {
         console.log(error);
       }

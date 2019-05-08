@@ -5,6 +5,7 @@ const Warehouse = require('./Warehouse');
 const Product = require('./Product');
 const PersonalInformation = require('./PersonalInformation');
 const BankAccount = require('./BankAccount');
+const BankTransaction = require('./BankTransaction');
 const File = require('./File');
 
 module.exports = {
@@ -15,5 +16,6 @@ module.exports = {
   Product,
   PersonalInformation,
   BankAccount,
+  BankTransaction,
   File
 };

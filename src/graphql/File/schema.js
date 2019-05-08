@@ -10,12 +10,17 @@ module.exports = gql`
     path: String
   }
 
+  input FileInput {
+    file: Upload!
+    id: ID!
+  }
+
   extend type Query {
     getFile(id: ID!): File
     getFiles(limit: Int, offset: Int): [File]
   }
 
   extend type Mutation {
-    singleUpload(file: Upload!): File
+    singleUpload(input: FileInput!): File
   }
 `;

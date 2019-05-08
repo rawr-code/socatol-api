@@ -18,7 +18,19 @@ const BankAccountSchema = new Schema(
     number: {
       type: String,
       required: true
-    }
+    },
+    files: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'File'
+      }
+    ],
+    transactions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Transaction'
+      }
+    ]
   },
   {
     timestamps: true

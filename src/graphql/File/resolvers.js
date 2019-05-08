@@ -3,7 +3,7 @@ const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 const xlsx = require('xlsx');
 
-const { File } = require('../../db/models');
+const { File, BankAccount, BankTransaction } = require('../../db/models');
 
 const UPLOAD_DIR = './docs';
 
@@ -27,10 +27,11 @@ const storeFS = ({ stream, filename }) => {
   );
 };
 
-const processUpload = async upload => {
+const processUpload = async input => {
   try {
-    const { createReadStream, filename, mimetype, encoding } = await upload;
-    console.log(upload);
+    const { createReadStream, filename, mimetype, encoding } = await input.file;
+    let bankAccount = await BankAccount.findById(input.id);
+
     let stream = createReadStream();
     let buffers = [];
 
@@ -38,15 +39,36 @@ const processUpload = async upload => {
       buffers.push(data);
     });
 
-    stream.on('end', function() {
+    stream.on('end', async function() {
       var buffer = Buffer.concat(buffers);
-      var workbook = xlsx.read(buffer);
+      var workbook = xlsx.read(buffer, { type: 'buffer', raw: true });
       // console.log(workbook);
       let sheet_name_list = workbook.SheetNames;
       let xlData = xlsx.utils.sheet_to_json(
         workbook.Sheets[sheet_name_list[0]]
+        // { header: 1 }
       );
-      console.log(xlData);
+      // xlData = xlData.map(item => ({
+      //   ...item,
+      //   Importe: item.Importe.replace(/\./g, '').replace(',', '.')
+      // }));
+
+      let transactions = xlData.map(async item => {
+        const transaction = new BankTransaction({
+          date: item.Fecha,
+          ref: item.Referencia,
+          concept: item.Descripción,
+          amount: item.Importe,
+          bankAccount
+        });
+
+        await transaction.save();
+
+        return transaction;
+      });
+
+      transactions = await Promise.all(transactions);
+      await bankAccount.transactions.push(...transactions);
     });
 
     const { path } = await storeFS({ stream, filename });
@@ -59,7 +81,10 @@ const processUpload = async upload => {
     });
 
     await file.save();
-    console.log(file);
+    bankAccount.files.push(file);
+    await bankAccount.save();
+
+    console.log(bankAccount);
     return file;
   } catch (error) {
     console.log(error);
@@ -89,6 +114,6 @@ module.exports = {
     }
   },
   Mutation: {
-    singleUpload: async (root, { file }) => processUpload(file)
+    singleUpload: async (root, { input }) => processUpload(input)
   }
 };

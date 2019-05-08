@@ -9,6 +9,13 @@ module.exports = gql`
     number: String
   }
 
+  type BankAccountTransaction {
+    date: String
+    ref: String
+    concept: String
+    amount: String
+  }
+
   enum BankAccountTypes {
     CORRIENTE
     AHORRO
@@ -24,6 +31,11 @@ module.exports = gql`
 
   extend type Query {
     getBankAccount(id: ID!): BankAccount
+    getBankAccountTransactions(
+      id: ID!
+      limit: Int
+      offset: Int
+    ): [BankAccountTransaction]
     getBankAccounts(limit: Int, offset: Int): [BankAccount]
   }
 
