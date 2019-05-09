@@ -3,7 +3,7 @@ const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 const xlsx = require('xlsx');
 
-const { File, BankAccount, BankTransaction } = require('../../db/models');
+const { File, BankAccount, BankTransaction } = require('../../models');
 
 const UPLOAD_DIR = './docs';
 

@@ -29,6 +29,14 @@ module.exports = gql`
     number: String!
   }
 
+  input BankAccountTransactionInput {
+    bankAccount: ID!
+    date: String!
+    ref: String!
+    concept: String!
+    amount: String!
+  }
+
   extend type Query {
     getBankAccount(id: ID!): BankAccount
     getBankAccountTransactions(
@@ -43,5 +51,6 @@ module.exports = gql`
     newBankAccount(input: BankAccountInput!): String
     updateBankAccount(input: BankAccountInput!): String
     deleteBankAccount(id: ID!): String
+    newBankAccountTransaction(input: BankAccountTransactionInput!): String
   }
 `;

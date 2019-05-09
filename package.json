@@ -1,9 +1,9 @@
 {
   "name": "socatol-graphql-api",
   "version": "3.0.0",
-  "main": "src/index.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/index.js"
+    "start": "nodemon src/server.js"
   },
   "repository": "https://github.com/EmmanuelVillegas/socatol-api.git",
   "author": "Emmanuel Villegas <emmanuelvillegas01@gmail.com>",
@@ -12,7 +12,7 @@
     "nodemon": "^1.18.7"
   },
   "dependencies": {
-    "apollo-server": "^2.4.8",
+    "apollo-server": "^2.5.0",
     "apollo-server-express": "^2.4.8",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
@@ -21,6 +21,7 @@
     "graphql": "14.1.0",
     "jsonwebtoken": "^8.4.0",
     "mkdirp": "^0.5.1",
+    "moment": "^2.24.0",
     "mongoose": "^5.3.14",
     "morgan": "^1.9.1",
     "passport": "^0.4.0",

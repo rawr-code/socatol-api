@@ -5,7 +5,7 @@ module.exports = gql`
     id: ID
     name: String
     description: String
-    products: [Product]
+    # products: [Product]
   }
 
   input WarehouseInput {

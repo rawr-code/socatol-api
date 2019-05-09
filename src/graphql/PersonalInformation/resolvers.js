@@ -1,4 +1,4 @@
-const { PersonalInformation } = require('../../db/models');
+const { PersonalInformation } = require('../../models');
 
 module.exports = {
   Query: {

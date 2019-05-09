@@ -1,8 +1,4 @@
-const {
-  Configuration,
-  PersonalInformation,
-  Invoice
-} = require('../../db/models');
+const { Configuration, PersonalInformation, Invoice } = require('../../models');
 
 module.exports = {
   Query: {

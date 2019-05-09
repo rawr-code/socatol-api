@@ -11,6 +11,11 @@ module.exports = gql`
     warehouse: Warehouse
   }
 
+  type Message {
+    id: String
+    content: String
+  }
+
   input ProductInput {
     id: ID
     name: String!
@@ -21,6 +26,7 @@ module.exports = gql`
   }
 
   extend type Query {
+    messages: [Message!]!
     getProduct(id: ID!): Product
     getProducts(limit: Int, offset: Int): [Product]
   }

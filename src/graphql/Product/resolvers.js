@@ -1,4 +1,4 @@
-const { Warehouse, Product } = require('../../db/models');
+const { Warehouse, Product } = require('../../models');
 
 module.exports = {
   Query: {

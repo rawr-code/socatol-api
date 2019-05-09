@@ -1,4 +1,4 @@
-const { BankAccount, BankTransaction } = require('../../db/models');
+const { BankAccount, BankTransaction } = require('../../models');
 
 module.exports = {
   Query: {
@@ -55,11 +55,7 @@ module.exports = {
       try {
         await BankAccount.findOneAndUpdate({ _id: input.id }, input);
 
-        return {
-          success: true,
-          error: false,
-          message: 'Guardado con exito'
-        };
+        return 'Actualizado con exito';
       } catch (error) {
         console.log(error);
       }
@@ -73,6 +69,26 @@ module.exports = {
           error: false,
           message: 'Eliminado con exito'
         };
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    newBankAccountTransaction: async (root, { input }) => {
+      try {
+        const bankAccount = await BankAccount.findById(input.bankAccount);
+        const transaction = new BankTransaction({
+          bankAccount: input.bankAccount,
+          date: input.date,
+          ref: input.ref,
+          concept: input.concept,
+          amount: input.amount
+        });
+
+        await transaction.save();
+        bankAccount.transactions.push(transaction);
+        await bankAccount.save();
+
+        return 'Registrado con exito';
       } catch (error) {
         console.log(error);
       }

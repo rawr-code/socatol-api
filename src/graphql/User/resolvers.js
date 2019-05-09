@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const config = require('../../db/config');
+const config = require('../../config');
 
-const { User } = require('../../db/models');
+const { User } = require('../../models');
 
 const tokenGenerator = async (payload, secretKey, options) => {
   try {
