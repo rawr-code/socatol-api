@@ -1,6 +1,5 @@
 // ------------------------------------
-const dotenv = require('dotenv').config;
-dotenv();
+require('dotenv').config();
 // ------------------------------------
 
 const { ApolloServer } = require('apollo-server');
@@ -29,7 +28,7 @@ const server = new ApolloServer({
 
 connectToMongo(() => {
   console.log('\nDATABASE: conected\n');
-  server.listen({ port: 5000 }).then(({ url }) => {
+  server.listen({ port: process.env.APOLLO_PORT }).then(({ url }) => {
     console.log(`🚀 Server ready at ${url}`);
   });
 });
