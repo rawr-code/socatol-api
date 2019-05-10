@@ -30,10 +30,8 @@ const prompt_attributes = [
   }
 ];
 
-// Mongoose Configuration
-const DB = 'mongodb://localhost/socatol-api-graphql';
-
-connectToMongo(DB, connection => {
+connectToMongo(connection => {
+  console.log('\nCrear usuario administrador\n');
   prompt.start();
 
   // Prompt and get user input then display those data in console.
@@ -53,6 +51,7 @@ connectToMongo(DB, connection => {
 
         await user.save();
 
+        console.log('\nUsuario generado con exito\n');
         connection.close();
       }
     } catch (error) {

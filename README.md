@@ -1,3 +1,8 @@
-#SOCATOL GRAPHQL API
+# SOCATOL GRAPHQL API
 
-✨ (Node + Express + GraphQL + MongoDB) ✨
+## ✨ Technologies ✨
+
+- ### Node
+- ### ApolloServer
+- ### GraphQL
+- ### MongoDB

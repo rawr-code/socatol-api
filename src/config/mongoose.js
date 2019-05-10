@@ -1,14 +1,20 @@
-const mongoose = require('mongoose');
+// ------------------------------------
+const dotenv = require('dotenv').config;
+dotenv();
+// ------------------------------------
 
-module.exports = (db, callback) =>
+const mongoose = require('mongoose');
+const { MONGO_URL, MONGO_PORT, DB_NAME } = process.env;
+const mongoUrl = `mongodb://${MONGO_URL}:${MONGO_PORT}/${DB_NAME}`;
+
+module.exports = callback =>
   mongoose
-    .connect(db, {
+    .connect(mongoUrl, {
       useCreateIndex: true,
       useFindAndModify: false,
       useNewUrlParser: true
     })
     .then(() => {
-      console.log('\n');
       callback(mongoose.connection);
     })
     .catch(err =>

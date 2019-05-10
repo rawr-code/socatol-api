@@ -1,9 +1,12 @@
-const { ApolloServer } = require('apollo-server');
-const mongoose = require('mongoose');
+// ------------------------------------
+const dotenv = require('dotenv').config;
+dotenv();
+// ------------------------------------
 
-// Mongoose Configuration
-const PORT = process.env.PORT || 5000;
-const DB = 'mongodb://localhost/socatol-api-graphql';
+const { ApolloServer } = require('apollo-server');
+
+// MongoDB
+const connectToMongo = require('./config/mongoose');
 
 // GraphQL
 const { typeDefs, resolvers } = require('./graphql');
@@ -24,16 +27,9 @@ const server = new ApolloServer({
   }
 });
 
-mongoose
-  .connect(DB, {
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useNewUrlParser: true
-  })
-  .then(() => {
-    console.log('\nDATABASE STATUS: conected\n');
-    server.listen({ port: PORT }).then(({ url }) => {
-      console.log(`🚀 Server ready at ${url}`);
-    });
-  })
-  .catch(err => console.log(`Error al conectar con la base de datos: ${err}`));
+connectToMongo(() => {
+  console.log('\nDATABASE: conected\n');
+  server.listen({ port: 5000 }).then(({ url }) => {
+    console.log(`🚀 Server ready at ${url}`);
+  });
+});
