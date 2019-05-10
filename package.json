@@ -3,7 +3,8 @@
   "version": "3.0.0",
   "main": "src/server.js",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/server.js",
+    "createsuperuser": "node src/utils/createSuperUser"
   },
   "repository": "https://github.com/EmmanuelVillegas/socatol-api.git",
   "author": "Emmanuel Villegas <emmanuelvillegas01@gmail.com>",
@@ -22,6 +23,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "prompt": "^1.0.0",
     "shortid": "^2.2.14",
     "xlsx": "^0.14.3"
   }

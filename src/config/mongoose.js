@@ -1,23 +1,15 @@
 const mongoose = require('mongoose');
-const config = require('./');
 
-module.exports = server =>
+module.exports = (db, callback) =>
   mongoose
-    .connect(config.db, {
+    .connect(db, {
       useCreateIndex: true,
       useFindAndModify: false,
       useNewUrlParser: true
     })
-    .then(db => {
-      console.log('\nDATABASE STATUS: conected\n');
-      server.listen(config.port, () => {
-        console.log(
-          `Server listening on https://localhost:${
-            config.port
-          }\nGraphQL Apollo Server on https://localhost:${config.port}/graphql
-          `
-        );
-      });
+    .then(() => {
+      console.log('\n');
+      callback(mongoose.connection);
     })
     .catch(err =>
       console.log(`Error al conectar con la base de datos: ${err}`)
