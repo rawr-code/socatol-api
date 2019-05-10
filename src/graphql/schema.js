@@ -253,6 +253,10 @@ const typeDefs = gql`
     warehouse: ID!
   }
 
+  type Subscription {
+    warehouseAdded: Warehouse
+  }
+
   type Query {
     # Configuration
     configuration: Configuration

@@ -1,4 +1,6 @@
-// const { PubSub } = require('apollo-server');
+const { pubsub } = require('./subscriptions');
+
+// Controllers
 const configurationController = require('../controllers/configuration.controller');
 const userController = require('../controllers/user.controller');
 const bankAccountController = require('../controllers/bankAccount.controller');
@@ -8,7 +10,8 @@ const personController = require('../controllers/person.controller');
 const warehouseController = require('../controllers/warehouse.controller');
 const productController = require('../controllers/product.controller');
 
-// const pubsub = new PubSub();
+// Subscriptions Types
+const { WAREHOUSE_ADDED } = require('./subscriptionsTypes');
 
 const Mutations = {
   // Configuration_Mutation
@@ -51,6 +54,7 @@ const Mutations = {
   },
   // Warehouse_Mutation
   addWarehouse: (root, args, context) => {
+    pubsub.publish(WAREHOUSE_ADDED, { warehouseAdded: args.input });
     return warehouseController.addWarehouse(root, args);
   },
   updateWarehouse: (root, args, context) => {

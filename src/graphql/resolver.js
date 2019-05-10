@@ -1,11 +1,9 @@
-// const { PubSub } = require('apollo-server');
-
+const { Subscriptions } = require('./subscriptions');
 const Query = require('./queries');
 const Mutation = require('./mutations');
 
-// const pubsub = new PubSub();
-
 const resolvers = {
+  Subscription: Subscriptions,
   Query,
   Mutation
 };
