@@ -1,34 +1,39 @@
-const express = require('express');
-const cors = require('cors');
-const { createServer } = require('http');
-const { ApolloServer } = require('apollo-server-express');
+const { ApolloServer } = require('apollo-server');
+const mongoose = require('mongoose');
 
-// Server Configurations
-const connectToMongo = require('./config/mongoose');
+// Mongoose Configuration
+const PORT = process.env.PORT || 5000;
+const DB = 'mongodb://localhost/socatol-api-graphql';
 
 // GraphQL
-const { modules } = require('./graphql');
+const { typeDefs, resolvers } = require('./graphql');
 
-// For Development
-const morgan = require('morgan');
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: async ({ req, connection }) => {
+    if (connection) {
+      // check connection for metadata
+      return connection.context;
+    } else {
+      // check from req
+      const token = req.headers.authorization || '';
 
-// Initialization Server
-const app = express();
-
-app.use(morgan('dev'));
-app.use(cors());
-app.use((req, res, next) => {
-  res.removeHeader('X-Powered-By');
-  next();
+      return { token };
+    }
+  }
 });
 
-const httpServer = createServer(app);
-
-const apolloServer = new ApolloServer({
-  modules
-});
-
-apolloServer.applyMiddleware({ app });
-
-// Connect to database and run app
-connectToMongo(httpServer);
+mongoose
+  .connect(DB, {
+    useCreateIndex: true,
+    useFindAndModify: false,
+    useNewUrlParser: true
+  })
+  .then(() => {
+    console.log('\nDATABASE STATUS: conected\n');
+    server.listen({ port: PORT }).then(({ url }) => {
+      console.log(`🚀 Server ready at ${url}`);
+    });
+  })
+  .catch(err => console.log(`Error al conectar con la base de datos: ${err}`));

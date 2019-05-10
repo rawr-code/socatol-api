@@ -3,7 +3,7 @@ const mkdirp = require('mkdirp');
 const shortid = require('shortid');
 const xlsx = require('xlsx');
 
-const { File, BankAccount, BankTransaction } = require('../../models');
+const { File, BankAccount, BankTransaction } = require('../models');
 
 const UPLOAD_DIR = './docs';
 
@@ -92,28 +92,24 @@ const processUpload = async input => {
 };
 
 module.exports = {
-  Query: {
-    getFile: async (root, { id }) => {
-      try {
-        const files = await File.findById(id);
-        return files;
-      } catch (error) {
-        console.log(error);
-      }
-    },
-    getFiles: async (root, { limit, offset }) => {
-      try {
-        const files = await File.find({})
-          .limit(limit)
-          .skip(offset);
-
-        return files;
-      } catch (error) {
-        console.log(error);
-      }
+  bankTransactionFile: async (root, { id }) => {
+    try {
+      const files = await File.findById(id);
+      return files;
+    } catch (error) {
+      console.log(error);
     }
   },
-  Mutation: {
-    singleUpload: async (root, { input }) => processUpload(input)
-  }
+  bankTransactionFiles: async (root, { limit, offset }) => {
+    try {
+      const files = await File.find({})
+        .limit(limit)
+        .skip(offset);
+
+      return files;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  uploadTransactions: async (root, { input }) => processUpload(input)
 };

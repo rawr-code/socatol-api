@@ -17,6 +17,10 @@ const TransactionSchema = new Schema({
     type: String,
     required: true
   },
+  balance: {
+    type: String,
+    required: true
+  },
 
   bankAccount: {
     type: Schema.Types.ObjectId,

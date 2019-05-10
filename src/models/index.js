@@ -3,7 +3,7 @@ const User = require('./User');
 const Invoice = require('./Invoice');
 const Warehouse = require('./Warehouse');
 const Product = require('./Product');
-const PersonalInformation = require('./PersonalInformation');
+const Person = require('./Person');
 const BankAccount = require('./BankAccount');
 const BankTransaction = require('./BankTransaction');
 const File = require('./File');
@@ -14,7 +14,7 @@ module.exports = {
   Invoice,
   Warehouse,
   Product,
-  PersonalInformation,
+  Person,
   BankAccount,
   BankTransaction,
   File
