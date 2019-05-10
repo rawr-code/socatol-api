@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const config = require('../config');
 
 const { User } = require('../models');
 
@@ -14,6 +13,26 @@ const tokenGenerator = async (payload, secretKey, options) => {
 };
 
 module.exports = {
+  user: async (root, { id }) => {
+    try {
+      const user = await User.findById(id);
+
+      return user;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  users: async (root, { limit, offset }) => {
+    try {
+      const users = await User.find({})
+        .limit(limit)
+        .skip(offset);
+
+      return users;
+    } catch (error) {
+      console.log(error);
+    }
+  },
   addUser: async (root, { input }) => {
     try {
       const searchUsername = await User.findOne({ username: input.username });
@@ -49,7 +68,7 @@ module.exports = {
             id: user.id,
             user: user.username
           };
-          const secret = config.JWT_SECRET;
+          const secret = process.env.SECRET_KEY;
           const options = {
             expiresIn: '12h'
           };
