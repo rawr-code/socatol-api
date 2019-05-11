@@ -22,6 +22,9 @@ const Queries = {
   users: (root, args, context) => {
     return userController.users(root, args);
   },
+  authUser: (root, args, context) => {
+    return userController.authUser(root, args, context);
+  },
   // BankAccount_Query
   bankAccount: (root, args, context) => {
     return bankAccountController.bankAccount(root, args);

@@ -50,7 +50,6 @@ const typeDefs = gql`
   # User
   type User {
     username: String
-    password: String
     role: String
     active: Boolean
   }
@@ -71,7 +70,7 @@ const typeDefs = gql`
     active: Boolean
   }
 
-  input AuthUserInput {
+  input UserTokenInput {
     username: String!
     password: String!
   }
@@ -264,6 +263,7 @@ const typeDefs = gql`
     # User
     user(id: ID!): User
     users(limit: Int, offset: Int): [User]
+    authUser(token: String!): User
 
     # BankAccount
     bankAccount(id: ID!): BankAccount
@@ -303,7 +303,7 @@ const typeDefs = gql`
 
     # User
     addUser(input: UserInput!): String
-    authUser(input: AuthUserInput!): Token!
+    userToken(input: UserTokenInput!): Token!
 
     # BankAccount
     addBankAccount(input: BankAccountInput!): String

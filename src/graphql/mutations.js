@@ -28,8 +28,8 @@ const Mutations = {
   addUser: (root, args, context) => {
     return userController.addUser(root, args);
   },
-  authUser: (root, args, context) => {
-    return userController.authUser(root, args);
+  userToken: (root, args, context) => {
+    return userController.userToken(root, args);
   },
   // BankAccount_Mutation
   addBankAccount: (root, args, context) => {

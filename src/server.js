@@ -20,21 +20,20 @@ const server = new ApolloServer({
 
     if (token !== '') {
       const user = await decodeUserToken(token);
-
       if (user !== null) {
         req.user = user;
       }
     }
 
-    if (connection) {
-      // check connection for metadata
-      return connection.context;
-    } else {
-      // check from req
-      const token = req.headers.authorization || '';
+    // if (connection) {
+    //   // check connection for metadata
+    //   return connection.context;
+    // } else {
+    //   // check from req
+    //   const token = req.headers.authorization || '';
 
-      return { token };
-    }
+    //   return { token };
+    // }
   }
 });
 

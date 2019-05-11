@@ -33,6 +33,26 @@ module.exports = {
       console.log(error);
     }
   },
+  authUser: async (root, { token }, context) => {
+    try {
+      let user = null;
+
+      if (token !== '') {
+        const { id } = await jwt.verify(token, process.env.SECRET_KEY);
+        user = await User.findById(id);
+      } else {
+        const userId = context.user;
+        if (!userId) return null;
+
+        user = await User.findById(userId);
+      }
+
+      return user;
+    } catch (error) {
+      console.log(error.message);
+      return null;
+    }
+  },
   addUser: async (root, { input }) => {
     try {
       const searchUsername = await User.findOne({ username: input.username });
@@ -53,7 +73,7 @@ module.exports = {
       console.log(error);
     }
   },
-  authUser: async (root, { input }) => {
+  userToken: async (root, { input }) => {
     try {
       const user = await User.findOne({ username: input.username });
 
