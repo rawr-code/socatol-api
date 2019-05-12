@@ -1,5 +1,3 @@
-const { pubsub } = require('./subscriptions');
-
 // Controllers
 const configurationController = require('../controllers/configuration.controller');
 const userController = require('../controllers/user.controller');
@@ -10,8 +8,7 @@ const personController = require('../controllers/person.controller');
 const warehouseController = require('../controllers/warehouse.controller');
 const productController = require('../controllers/product.controller');
 
-// Subscriptions Types
-const { WAREHOUSE_ADDED } = require('./subscriptionsTypes');
+const { pubsub } = require('./subscriptions');
 
 const Mutations = {
   // Configuration_Mutation
@@ -33,7 +30,7 @@ const Mutations = {
   },
   // BankAccount_Mutation
   addBankAccount: (root, args, context) => {
-    return bankAccountController.addBankAccount(root, args);
+    return bankAccountController.addBankAccount(pubsub, args);
   },
   updateBankAccount: (root, args, context) => {
     return bankAccountController.updateBankAccount(root, args);
@@ -54,8 +51,7 @@ const Mutations = {
   },
   // Warehouse_Mutation
   addWarehouse: (root, args, context) => {
-    pubsub.publish(WAREHOUSE_ADDED, { warehouseAdded: args.input });
-    return warehouseController.addWarehouse(root, args);
+    return warehouseController.addWarehouse(pubsub, args);
   },
   updateWarehouse: (root, args, context) => {
     return warehouseController.updateWarehouse(root, args);
@@ -65,7 +61,7 @@ const Mutations = {
   },
   // Product_Mutation
   addProduct: (root, args, context) => {
-    return productController.addProduct(root, args);
+    return productController.addProduct(pubsub, args);
   },
   updateProduct: (root, args, context) => {
     return productController.updateProduct(root, args);

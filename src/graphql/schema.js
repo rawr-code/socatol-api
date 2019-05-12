@@ -253,7 +253,12 @@ const typeDefs = gql`
   }
 
   type Subscription {
+    # BankAccount
+    bankAccountAdded: BankAccount
+    # Warehouse
     warehouseAdded: Warehouse
+    # Product
+    productAdded: Product
   }
 
   type Query {

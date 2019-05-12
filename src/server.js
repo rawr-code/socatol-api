@@ -15,25 +15,42 @@ const decodeUserToken = require('./helpers/decodeUserToken');
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req, connection }) => {
-    const token = req.headers.authorization.split(' ')[1] || '';
-
-    if (token !== '') {
-      const user = await decodeUserToken(token);
-      if (user !== null) {
-        req.user = user;
-      }
+  subscriptions: {
+    onConnect: (connectionParams, webSocket, context) => {
+      console.log('Connect');
+    },
+    onDisconnect: (webSocket, context) => {
+      console.log('Disconnect');
     }
+  },
+  context: async ({ req, connection }) => {
+    try {
+      if (req) {
+        if (req.headers && req.headers.authorization) {
+          const token = req.headers.authorization.split(' ')[1] || '';
 
-    // if (connection) {
-    //   // check connection for metadata
-    //   return connection.context;
-    // } else {
-    //   // check from req
-    //   const token = req.headers.authorization || '';
+          if (token !== '') {
+            const user = await decodeUserToken(token);
+            if (user !== null) {
+              req.user = user;
+            }
+          }
+        }
+      }
 
-    //   return { token };
-    // }
+      // if (connection) {
+      //   // check connection for metadata
+      //   return connection.context;
+      // } else {
+      //   // check from req
+      //   const token = req.headers.authorization || '';
+
+      //   return { token };
+      // }
+    } catch (err) {
+      console.error(err);
+      return null;
+    }
   }
 });
 

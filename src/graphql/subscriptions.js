@@ -2,12 +2,24 @@ const { PubSub } = require('apollo-server');
 const pubsub = new PubSub();
 
 // Subscriptions Types
-const { WAREHOUSE_ADDED } = require('./subscriptionsTypes');
+const {
+  bankAccountTypes,
+  warehouseTypes,
+  productTypes
+} = require('./subscriptionsTypes');
 
 const Subscriptions = {
+  // BankAccount
+  bankAccountAdded: {
+    subscribe: () => pubsub.asyncIterator([bankAccountTypes.ADD])
+  },
+  // Warehouse
   warehouseAdded: {
-    // Additional event labels can be passed to asyncIterator creation
-    subscribe: () => pubsub.asyncIterator([WAREHOUSE_ADDED])
+    subscribe: () => pubsub.asyncIterator([warehouseTypes.ADD])
+  },
+  // Product
+  productAdded: {
+    subscribe: () => pubsub.asyncIterator([productTypes.ADD])
   }
 };
 

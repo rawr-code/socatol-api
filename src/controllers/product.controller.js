@@ -1,5 +1,7 @@
 const { Warehouse, Product } = require('../models');
 
+const { productTypes } = require('../graphql/subscriptionsTypes');
+
 module.exports = {
   product: async (root, { id }) => {
     try {
@@ -22,7 +24,7 @@ module.exports = {
       console.log(error);
     }
   },
-  addProduct: async (root, { input }) => {
+  addProduct: async (pubsub, { input }) => {
     try {
       let warehouse = await Warehouse.findById(input.warehouse);
       const product = new Product({
@@ -38,6 +40,8 @@ module.exports = {
       warehouse.products.push(product);
 
       await warehouse.save();
+
+      pubsub.publish(productTypes.ADD, { productAdded: product });
 
       return 'Registrado con exito';
     } catch (error) {

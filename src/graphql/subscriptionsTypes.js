@@ -1,3 +1,11 @@
 module.exports = {
-  WAREHOUSE_ADDED: 'WAREHOUSE_ADDED'
+  bankAccountTypes: {
+    ADD: 'BANKACCOUNT_ADD'
+  },
+  warehouseTypes: {
+    ADD: 'WAREHOUSE_ADD'
+  },
+  productTypes: {
+    ADD: 'PRODUCT_ADD'
+  }
 };

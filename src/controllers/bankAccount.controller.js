@@ -1,5 +1,7 @@
 const { BankAccount, BankTransaction } = require('../models');
 
+const { bankAccountTypes } = require('../graphql/subscriptionsTypes');
+
 module.exports = {
   bankAccount: async (root, { id }) => {
     try {
@@ -32,7 +34,7 @@ module.exports = {
       console.log(error);
     }
   },
-  addBankAccount: async (root, { input }) => {
+  addBankAccount: async (pubsub, { input }) => {
     try {
       const bankAccount = new BankAccount({
         name: input.name,
@@ -42,6 +44,8 @@ module.exports = {
       });
 
       await bankAccount.save();
+
+      pubsub.publish(bankAccountTypes.ADD, { bankAccountAdded: bankAccount });
 
       return 'Guardado con exito';
     } catch (error) {
