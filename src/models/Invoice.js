@@ -7,13 +7,17 @@ const InvoiceSchema = new Schema(
       // unique: true,
       required: true
     },
+    amount: {
+      type: Number,
+      required: true
+    },
     type: {
       type: String,
-      enum: ['PURCHASE', 'SALE'],
+      enum: ['COMPRA', 'VENTA'],
       required: true
     },
     dateEmit: {
-      type: Date,
+      type: String,
       required: true
     },
     paymentType: {
@@ -29,9 +33,22 @@ const InvoiceSchema = new Schema(
     },
     person: {
       type: Schema.Types.ObjectId,
-      ref: 'PersonalInformation',
+      ref: 'Person',
       required: true
     },
+    status: {
+      type: String,
+      enum: ['PENDIENTE', 'CONCILIADO'],
+      default: 'PENDIENTE'
+    },
+
+    transactions: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Transaction'
+      }
+    ],
+
     products: [
       {
         product: {

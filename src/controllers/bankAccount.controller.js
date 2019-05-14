@@ -1,4 +1,4 @@
-const { BankAccount, BankTransaction } = require('../models');
+const { BankAccount, BankTransaction, Invoice } = require('../models');
 
 const { bankAccountTypes } = require('../graphql/subscriptionsTypes');
 
@@ -19,6 +19,22 @@ module.exports = {
         .skip(offset);
 
       return transactions;
+    } catch (error) {
+      console.log(error);
+    }
+  },
+  bankAccountTransactionConciliate: async (root, { input, limit, offset }) => {
+    try {
+      console.log(input);
+      let transaction = await BankTransaction.findById(input.transactionId);
+      let invoice = await Invoice.findById(input.invoiceId);
+      transaction.invoices.push(invoice);
+      await transaction.save();
+      invoice.status = 'CONCILIADO';
+      invoice.transactions.push(transaction);
+      await invoice.save();
+
+      return 'exito';
     } catch (error) {
       console.log(error);
     }

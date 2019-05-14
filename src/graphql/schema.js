@@ -43,10 +43,21 @@ const typeDefs = gql`
   }
 
   input FileInput {
-    file: Upload!
+    config: FileConfigInput!
+    files: [Upload!]!
     id: ID!
   }
 
+  input FileConfigInput {
+    concept: Int!
+    date: Int!
+    ref: Int!
+    typeAmount: String!
+    amount: Int
+    debit: Int
+    credit: Int
+    balance: Int
+  }
   # User
   type User {
     username: String
@@ -85,10 +96,14 @@ const typeDefs = gql`
   }
 
   type BankAccountTransaction {
+    id: ID
     date: String
     ref: String
     concept: String
     amount: String
+    balance: String
+    status: String
+    invoices: [Invoice]
   }
 
   enum BankAccountTypes {
@@ -112,6 +127,11 @@ const typeDefs = gql`
     amount: String!
   }
 
+  input bankAccountTransactionConciliateInput {
+    transactionId: ID!
+    invoiceId: ID!
+  }
+
   # Invoice
   type Invoice {
     id: ID
@@ -123,6 +143,9 @@ const typeDefs = gql`
     # user: User
     person: Person
     products: [ProductInvoice]
+    status: String
+    amount: Int
+    transactions: [BankAccountTransaction]
   }
 
   type InvoiceList {
@@ -131,6 +154,8 @@ const typeDefs = gql`
     dateEmit: String
     paymentType: PaymentTypes
     person: String
+    status: String
+    amount: Int
   }
 
   type ProductInvoice {
@@ -159,6 +184,7 @@ const typeDefs = gql`
     note: String
     person: InvoicePersonInput!
     products: [InvoiceProductInput!]
+    notes: String
   }
 
   input InvoicePersonInput {
@@ -170,6 +196,7 @@ const typeDefs = gql`
     address: String
     phone: String
     email: String
+    notes: String
   }
 
   input InvoiceProductInput {
@@ -315,9 +342,11 @@ const typeDefs = gql`
     updateBankAccount(input: BankAccountInput!): String
     deleteBankAccount(id: ID!): String
     addBankAccountTransactions(input: BankAccountTransactionInput!): String
-
+    bankAccountTransactionConciliate(
+      input: bankAccountTransactionConciliateInput!
+    ): String
     # BankTransaction
-    uploadTransactions(input: FileInput!): File
+    uploadTransactions(input: FileInput!): String
 
     # Invoice
     addInvoice(input: InvoiceInput!, type: InvoiceTypes!): String

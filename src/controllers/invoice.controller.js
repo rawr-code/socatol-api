@@ -1,4 +1,5 @@
-const { Configuration, PersonalInformation, Invoice } = require('../models');
+const moment = require('moment');
+const { Configuration, Person, Invoice } = require('../models');
 
 module.exports = {
   invoice: async (root, { id }) => {
@@ -23,7 +24,9 @@ module.exports = {
         invoices = invoices.map(invoice => ({
           id: invoice.id,
           number: invoice.number,
+          amount: invoice.amount,
           dateEmit: invoice.dateEmit,
+          status: invoice.status,
           paymentType: invoice.paymentType,
           person: invoice.person.name
         }));
@@ -43,14 +46,8 @@ module.exports = {
   addInvoice: async (root, { input, type }) => {
     try {
       let config = await Configuration.findOne();
-      if (!config) {
-        return {
-          message: 'Debe configurar el sistema antes de usarlo',
-          success: false,
-          error: true
-        };
-      }
-
+      if (!config) return 'Debe configurar el sistema antes de usarlo';
+      let amount = 0;
       let invoiceNumber;
       let person;
       let { products } = input;
@@ -58,16 +55,19 @@ module.exports = {
       const { id: personId, ...personInfo } = input.person;
 
       if (personId) {
-        person = await PersonalInformation.findById(personId);
+        person = await Person.findById(personId);
         if (!person) {
           throw new Error('Persona no encontrada');
         }
       } else {
-        person = new PersonalInformation(personInfo);
+        person = new Person(personInfo);
+
         await person.save();
       }
 
+      // Products
       products = products.map(async item => {
+        amount += Number(item.price) * Number(item.quantity);
         if (item.product) {
           return item;
         } else {
@@ -91,42 +91,43 @@ module.exports = {
       });
 
       products = await Promise.all(products);
+      // console.log(products);
 
-      if (type === 'PURCHASE') {
-        invoiceNumber = config.invoice.purchase.number;
-      } else if (type === 'SALE') {
+      // Invoice
+      if (type === 'VENTA') {
         invoiceNumber = config.invoice.sale.number;
+      } else if (type === 'COMPRA') {
+        invoiceNumber = config.invoice.purchase.number;
       }
 
       const invoice = new Invoice({
         number: invoiceNumber,
         type,
-        dateEmit: new Date(),
+        dateEmit: moment().format('DD-MM-YYYY'),
         paymentType: input.paymentType,
         note: input.note,
         person,
-        products
+        products,
+        amount
       });
+
+      console.log(invoice);
 
       await invoice.save();
 
-      if (type === 'SALE') {
+      if (type === 'VENTA') {
         config.invoice.sale.number += 1;
         await config.save();
         person.invoices.sale.push(invoice);
         await person.save();
-      } else if (type === 'PURCHASE') {
+      } else if (type === 'COMPRA') {
         config.invoice.purchase.number += 1;
         await config.save();
         person.invoices.purchase.push(invoice);
         await person.save();
       }
 
-      return {
-        success: true,
-        error: false,
-        message: 'Guardado con exito'
-      };
+      return 'Guardado con exito';
     } catch (error) {
       console.log(error);
       return {

@@ -21,6 +21,17 @@ const TransactionSchema = new Schema({
     type: String,
     required: true
   },
+  status: {
+    type: String,
+    enum: ['PENDIENTE', 'CONCILIADO'],
+    default: 'PENDIENTE'
+  },
+  invoices: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Invoice'
+    }
+  ],
 
   bankAccount: {
     type: Schema.Types.ObjectId,

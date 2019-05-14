@@ -29,63 +29,80 @@ const storeFS = ({ stream, filename }) => {
 
 const processUpload = async input => {
   try {
-    const { createReadStream, filename, mimetype, encoding } = await input.file;
     let bankAccount = await BankAccount.findById(input.id);
+    const fileConfig = input.config;
+    let files = await input.files;
+    files = await Promise.all(files);
 
-    let stream = createReadStream();
-    let buffers = [];
+    files.forEach(async file => {
+      const { createReadStream, filename, mimetype, encoding } = file;
 
-    stream.on('data', function(data) {
-      buffers.push(data);
-    });
+      let stream = createReadStream();
+      let buffers = [];
 
-    stream.on('end', async function() {
-      var buffer = Buffer.concat(buffers);
-      var workbook = xlsx.read(buffer, { type: 'buffer', raw: true });
-      // console.log(workbook);
-      let sheet_name_list = workbook.SheetNames;
-      let xlData = xlsx.utils.sheet_to_json(
-        workbook.Sheets[sheet_name_list[0]]
-        // { header: 1 }
-      );
-      // xlData = xlData.map(item => ({
-      //   ...item,
-      //   Importe: item.Importe.replace(/\./g, '').replace(',', '.')
-      // }));
-
-      let transactions = xlData.map(async item => {
-        const transaction = new BankTransaction({
-          date: item.Fecha,
-          ref: item.Referencia,
-          concept: item.Descripción,
-          amount: item.Importe,
-          bankAccount
-        });
-
-        await transaction.save();
-
-        return transaction;
+      stream.on('data', function(data) {
+        buffers.push(data);
       });
 
-      transactions = await Promise.all(transactions);
-      await bankAccount.transactions.push(...transactions);
+      stream.on('end', async function() {
+        var buffer = Buffer.concat(buffers);
+        var workbook = xlsx.read(buffer, { type: 'buffer', raw: true });
+        // console.log(workbook);
+        let sheet_name_list = workbook.SheetNames;
+        let xlData = xlsx.utils.sheet_to_json(
+          workbook.Sheets[sheet_name_list[0]],
+          { header: 1, range: 1 }
+        );
+        // xlData = xlData.map(item => ({
+        //   ...item,
+        //   Importe: item[3].replace(/\./g, '').replace(',', '.')
+        // }));
+
+        let transactions = xlData.map(async item => {
+          try {
+            const date = item[fileConfig.date - 1];
+            const ref = item[fileConfig.ref - 1];
+            const concept = item[fileConfig.concept - 1];
+            const amount = item[fileConfig.amount - 1];
+            const balance = item[fileConfig.balance - 1];
+
+            const transaction = new BankTransaction({
+              date,
+              ref,
+              concept,
+              amount,
+              balance,
+              bankAccount
+            });
+
+            await transaction.save();
+
+            return transaction;
+          } catch (err) {
+            console.error(err);
+          }
+        });
+
+        transactions = await Promise.all(transactions);
+
+        await bankAccount.transactions.push(...transactions);
+
+        const { path } = await storeFS({ stream, filename });
+
+        const file = new File({
+          filename,
+          mimetype,
+          encoding,
+          path
+        });
+
+        await file.save();
+        bankAccount.files.push(file);
+        await bankAccount.save();
+      });
     });
 
-    const { path } = await storeFS({ stream, filename });
-
-    const file = new File({
-      filename,
-      mimetype,
-      encoding,
-      path
-    });
-
-    await file.save();
-    bankAccount.files.push(file);
-    await bankAccount.save();
-
-    console.log(bankAccount);
-    return file;
+    return 'exito';
   } catch (error) {
     console.log(error);
   }

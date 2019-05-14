@@ -41,6 +41,9 @@ const Mutations = {
   addBankAccountTransactions: (root, args, context) => {
     return bankAccountController.addBankAccountTransactions(root, args);
   },
+  bankAccountTransactionConciliate: (root, args, context) => {
+    return bankAccountController.bankAccountTransactionConciliate(root, args);
+  },
   // BankTransaction_Mutation
   uploadTransactions: (root, args, context) => {
     return bankTransactionController.uploadTransactions(root, args);

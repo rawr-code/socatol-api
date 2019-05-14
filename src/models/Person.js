@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const PersonalInformationSchema = new Schema(
+const PersonSchema = new Schema(
   {
     dni: {
       type: String,
@@ -28,6 +28,7 @@ const PersonalInformationSchema = new Schema(
       required: true
     },
     email: String,
+    notes: String,
 
     invoices: {
       sale: [
@@ -49,4 +50,4 @@ const PersonalInformationSchema = new Schema(
   }
 );
 
-module.exports = model('PersonalInformation', PersonalInformationSchema);
+module.exports = model('Person', PersonSchema);
