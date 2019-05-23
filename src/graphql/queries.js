@@ -7,10 +7,13 @@ const invoiceController = require('../controllers/invoice.controller');
 const personController = require('../controllers/person.controller');
 const warehouseController = require('../controllers/warehouse.controller');
 const productController = require('../controllers/product.controller');
-
-// const pubsub = new PubSub();
+const backupController = require('../controllers/backup.controller');
 
 const Queries = {
+  // Backup_Query
+  backups: (root, args, context) => {
+    return backupController.backups();
+  },
   // Configuration_Query
   configuration: (root, args, context) => {
     return configurationController.configuration(root, args);

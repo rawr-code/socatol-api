@@ -7,10 +7,15 @@ const invoiceController = require('../controllers/invoice.controller');
 const personController = require('../controllers/person.controller');
 const warehouseController = require('../controllers/warehouse.controller');
 const productController = require('../controllers/product.controller');
+const backupController = require('../controllers/backup.controller');
 
 const { pubsub } = require('./subscriptions');
 
 const Mutations = {
+  // Backup_Mutation
+  backup: (root, args, context) => {
+    return backupController.backup();
+  },
   // Configuration_Mutation
   updateProductIVA: (root, args, context) => {
     return configurationController.updateProductIVA(root, args);

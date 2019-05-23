@@ -4,9 +4,11 @@ const InvoiceSchema = new Schema(
   {
     number: {
       type: Number,
-      // unique: true,
       required: true
     },
+    numberRef: String,
+    bankRef: String,
+
     amount: {
       type: Number,
       required: true

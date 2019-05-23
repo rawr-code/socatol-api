@@ -19,6 +19,20 @@ const ProductSchema = new Schema(
       required: true
     },
 
+    suppliders: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Person'
+      }
+    ],
+
+    clients: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Person'
+      }
+    ],
+
     warehouse: {
       type: Schema.Types.ObjectId,
       ref: 'Warehouse',

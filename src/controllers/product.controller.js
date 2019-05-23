@@ -5,7 +5,10 @@ const { productTypes } = require('../graphql/subscriptionsTypes');
 module.exports = {
   product: async (root, { id }) => {
     try {
-      const product = await Product.findById(id).populate('warehouse');
+      const product = await Product.findById(id)
+        .populate('warehouse')
+        .populate('clients')
+        .populate('suppliders');
 
       return product;
     } catch (error) {
@@ -16,6 +19,8 @@ module.exports = {
     try {
       const products = await Product.find({})
         .populate('warehouse')
+        .populate('clients')
+        .populate('suppliders')
         .limit(limit)
         .skip(offset);
 

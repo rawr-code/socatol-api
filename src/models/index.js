@@ -7,6 +7,7 @@ const Person = require('./Person');
 const BankAccount = require('./BankAccount');
 const BankTransaction = require('./BankTransaction');
 const File = require('./File');
+// const Backup = require('./Backup');
 
 module.exports = {
   Configuration,
@@ -18,4 +19,5 @@ module.exports = {
   BankAccount,
   BankTransaction,
   File
+  // Backup
 };

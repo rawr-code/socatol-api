@@ -30,6 +30,21 @@ const PersonSchema = new Schema(
     email: String,
     notes: String,
 
+    products: {
+      sale: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Product'
+        }
+      ],
+      purchase: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Product'
+        }
+      ]
+    },
+
     invoices: {
       sale: [
         {

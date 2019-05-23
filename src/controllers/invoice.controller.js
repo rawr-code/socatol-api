@@ -1,5 +1,11 @@
 const moment = require('moment');
-const { Configuration, Person, Invoice } = require('../models');
+const {
+  Configuration,
+  Person,
+  Invoice,
+  Warehouse,
+  Product
+} = require('../models');
 
 module.exports = {
   invoice: async (root, { id }) => {
@@ -46,6 +52,7 @@ module.exports = {
   addInvoice: async (root, { input, type }) => {
     try {
       let config = await Configuration.findOne();
+      let warehouse = await Warehouse.findOne();
       if (!config) return 'Debe configurar el sistema antes de usarlo';
       let amount = 0;
       let invoiceNumber;
@@ -69,13 +76,21 @@ module.exports = {
       products = products.map(async item => {
         amount += Number(item.price) * Number(item.quantity);
         if (item.product) {
+          let product = await Product.findById(item.product);
+          if (type === 'VENTA') {
+            product.clients.push(person);
+            await product.save();
+          } else if (type === 'COMPRA') {
+            product.suppliders.push(person);
+            await product.save();
+          }
           return item;
         } else {
           const product = new Product({
             name: item.name,
             price: item.price,
             stock: item.quantity,
-            warehouse: '5cc9bba99fbcea1f207bc11e',
+            warehouse,
             iva: config.iva.product
           });
 
@@ -84,8 +99,8 @@ module.exports = {
           return {
             product,
             name: product.name,
-            price: product.price,
-            quantity: item.quantity
+            price: Number(product.price),
+            quantity: Number(item.quantity)
           };
         }
       });
@@ -94,14 +109,10 @@ module.exports = {
       // console.log(products);
 
       // Invoice
-      if (type === 'VENTA') {
-        invoiceNumber = config.invoice.sale.number;
-      } else if (type === 'COMPRA') {
-        invoiceNumber = config.invoice.purchase.number;
-      }
 
-      const invoice = new Invoice({
-        number: invoiceNumber,
+      let invoice;
+
+      invoice = new Invoice({
         type,
         dateEmit: moment().format('DD-MM-YYYY'),
         paymentType: input.paymentType,
@@ -110,6 +121,13 @@ module.exports = {
         products,
         amount
       });
+      if (type === 'VENTA') {
+        invoice.number = config.invoice.sale.number;
+      } else if (type === 'COMPRA') {
+        invoice.number = config.invoice.purchase.number;
+        invoice.numberRef = input.number;
+        invoice.bankRef = input.ref;
+      }
 
       console.log(invoice);
 

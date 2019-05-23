@@ -1,6 +1,12 @@
 const { gql } = require('apollo-server');
 
 const typeDefs = gql`
+  # Backup
+  type Backup {
+    date: String
+    time: String
+  }
+
   # Configuration
   type Configuration {
     iva: ConfigurationIVA
@@ -70,6 +76,7 @@ const typeDefs = gql`
   }
 
   enum userTypes {
+    ADMINISTRADOR
     CONSULTOR
     CONTABLE
   }
@@ -78,7 +85,6 @@ const typeDefs = gql`
     username: String!
     password: String!
     role: userTypes!
-    active: Boolean
   }
 
   input UserTokenInput {
@@ -185,6 +191,8 @@ const typeDefs = gql`
     person: InvoicePersonInput!
     products: [InvoiceProductInput!]
     notes: String
+    ref: String
+    number: String
   }
 
   input InvoicePersonInput {
@@ -268,6 +276,8 @@ const typeDefs = gql`
     stock: Int
     description: String
     warehouse: Warehouse
+    clients: [Person]
+    suppliders: [Person]
   }
 
   input ProductInput {
@@ -289,6 +299,9 @@ const typeDefs = gql`
   }
 
   type Query {
+    # Backup
+    backups: [Backup]
+
     # Configuration
     configuration: Configuration
 
@@ -328,6 +341,9 @@ const typeDefs = gql`
   }
 
   type Mutation {
+    # Backup
+    backup: String
+
     # Configuration
     updateProductIVA(input: ConfigurationProductIVA!): String!
     updateSaleInvoiceNumber(input: ConfigurationInvoiceNumber!): String!
