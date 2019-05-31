@@ -3,6 +3,7 @@ const { gql } = require('apollo-server');
 const typeDefs = gql`
   # Backup
   type Backup {
+    id: ID
     date: String
     time: String
   }
@@ -343,6 +344,7 @@ const typeDefs = gql`
   type Mutation {
     # Backup
     backup: String
+    restore(id: ID!): String
 
     # Configuration
     updateProductIVA(input: ConfigurationProductIVA!): String!

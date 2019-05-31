@@ -1,3 +1,5 @@
+const { Backup } = require('../models');
+
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const path = require('path');
@@ -42,12 +44,8 @@ const newBackupDir =
 
 const newBackupPath = `${dbOptions.autoBackupPath}/${newBackupDir}`;
 
-const RestoreBackup = path => {
-  const { stdout, stderr } = exec(
-    `mongorestore --host ${MONGO_URL} --port ${MONGO_PORT} --db ${DB_NAME} --username ${
-      dbOptions.user
-    } --pasword ${dbOptions.pass} ${path}/${DB_NAME}`
-  );
+const RestoreBackup = async path => {
+  const { stdout, stderr } = await exec(`mongorestore -d ${DB_NAME} ${path}`);
 
   console.log('stdout:', stdout);
   console.log('stderr:', stderr);
@@ -60,13 +58,32 @@ const GenerateBackup = async () => {
 module.exports = {
   backups: async () => {
     try {
-      return [];
+      let bakps = [];
+      const data = await Backup.find({});
+
+      data.forEach(item => {
+        const text = item.path.split('/');
+        const datetime = text[1].split('-time-');
+        bakps.push({
+          id: item._id,
+          date: datetime[0],
+          time: datetime[1]
+        });
+      });
+
+      return bakps;
     } catch (error) {
       console.log(error);
     }
   },
   backup: async () => {
     try {
+      const newBackup = new Backup({
+        path: `${newBackupPath}/${DB_NAME}`
+      });
+
+      await newBackup.save();
+
       mongoose.disconnect();
 
       await GenerateBackup();
@@ -84,6 +101,17 @@ module.exports = {
   },
   restore: async (root, { id }) => {
     try {
+      const bak = await Backup.findById(id);
+      mongoose.disconnect();
+
+      RestoreBackup(bak.path);
+
+      mongoose.connect(mongoUrl, {
+        useCreateIndex: true,
+        useFindAndModify: false,
+        useNewUrlParser: true
+      });
+
       return 'restaurando...';
     } catch (error) {
       console.log(error);

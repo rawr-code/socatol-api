@@ -16,6 +16,9 @@ const Mutations = {
   backup: (root, args, context) => {
     return backupController.backup();
   },
+  restore: (root, args, context) => {
+    return backupController.restore(root, args);
+  },
   // Configuration_Mutation
   updateProductIVA: (root, args, context) => {
     return configurationController.updateProductIVA(root, args);

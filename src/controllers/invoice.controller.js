@@ -10,7 +10,9 @@ const {
 module.exports = {
   invoice: async (root, { id }) => {
     try {
-      const invoice = await Invoice.findById(id).populate('person');
+      const invoice = await Invoice.findById(id)
+        .populate('person')
+        .populate('transactions');
 
       return invoice;
     } catch (error) {

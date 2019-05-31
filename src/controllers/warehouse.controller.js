@@ -42,6 +42,7 @@ module.exports = {
   },
   updateWarehouse: async (root, { input }) => {
     try {
+      console.log(input);
       await Warehouse.findOneAndUpdate({ _id: input.id }, input);
 
       return 'Actualizado con exito';
