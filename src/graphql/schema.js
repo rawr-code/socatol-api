@@ -297,6 +297,9 @@ const typeDefs = gql`
     warehouseAdded: Warehouse
     # Product
     productAdded: Product
+    # Invoices
+    purchaseAdded: InvoiceList
+    saleAdded: InvoiceList
   }
 
   type Query {

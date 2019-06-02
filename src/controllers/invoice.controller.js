@@ -7,6 +7,8 @@ const {
   Product
 } = require('../models');
 
+const { invoiceTypes } = require('../graphql/subscriptionsTypes');
+
 module.exports = {
   invoice: async (root, { id }) => {
     try {
@@ -51,7 +53,7 @@ module.exports = {
       console.log(error);
     }
   },
-  addInvoice: async (root, { input, type }) => {
+  addInvoice: async (pubsub, { input, type }) => {
     try {
       let config = await Configuration.findOne();
       let warehouse = await Warehouse.findOne();
@@ -140,11 +142,34 @@ module.exports = {
         await config.save();
         person.invoices.sale.push(invoice);
         await person.save();
+        pubsub.publish(invoiceTypes.ADD_SALE, {
+          saleAdded: {
+            id: invoice.id,
+            number: invoice.number,
+            dateEmit: invoice.dateEmit,
+            paymentType: invoice.paymentType,
+            person: invoice.person.name,
+            amount: invoice.amount,
+            status: invoice.status
+          }
+        });
       } else if (type === 'COMPRA') {
         config.invoice.purchase.number += 1;
         await config.save();
         person.invoices.purchase.push(invoice);
         await person.save();
+
+        pubsub.publish(invoiceTypes.ADD_PURCHASE, {
+          purchaseAdded: {
+            id: invoice.id,
+            number: invoice.number,
+            dateEmit: invoice.dateEmit,
+            paymentType: invoice.paymentType,
+            person: invoice.person.name,
+            amount: invoice.amount,
+            status: invoice.status
+          }
+        });
       }
 
       return 'Guardado con exito';

@@ -5,7 +5,8 @@ const pubsub = new PubSub();
 const {
   bankAccountTypes,
   warehouseTypes,
-  productTypes
+  productTypes,
+  invoiceTypes
 } = require('./subscriptionsTypes');
 
 const Subscriptions = {
@@ -20,6 +21,13 @@ const Subscriptions = {
   // Product
   productAdded: {
     subscribe: () => pubsub.asyncIterator([productTypes.ADD])
+  },
+  // Invoices
+  purchaseAdded: {
+    subscribe: () => pubsub.asyncIterator([invoiceTypes.ADD_PURCHASE])
+  },
+  saleAdded: {
+    subscribe: () => pubsub.asyncIterator([invoiceTypes.ADD_SALE])
   }
 };
 

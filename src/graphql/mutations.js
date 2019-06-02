@@ -58,7 +58,7 @@ const Mutations = {
   },
   // Invoice_Mutation
   addInvoice: (root, args, context) => {
-    return invoiceController.addInvoice(root, args);
+    return invoiceController.addInvoice(pubsub, args);
   },
   // Warehouse_Mutation
   addWarehouse: (root, args, context) => {

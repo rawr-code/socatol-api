@@ -7,5 +7,9 @@ module.exports = {
   },
   productTypes: {
     ADD: 'PRODUCT_ADD'
+  },
+  invoiceTypes: {
+    ADD_PURCHASE: 'ADD_PURCHASE',
+    ADD_SALE: 'ADD_SALE'
   }
 };
