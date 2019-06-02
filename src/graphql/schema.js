@@ -281,6 +281,41 @@ const typeDefs = gql`
     suppliders: [Person]
   }
 
+  type ProductOther {
+    id: ID
+    name: String
+    price: Int
+    iva: String
+    stock: Int
+    description: String
+    warehouse: Warehouse
+    clients: [ProductClient]
+    suppliders: [ProductSupplier]
+  }
+
+  type ProductPrices {
+    invoice: Invoice
+    date: String
+    amount: Int
+    quantity: Int
+  }
+
+  type ProductQuantitys {
+    invoice: Invoice
+    date: String
+    quantity: Int
+  }
+
+  type ProductClient {
+    person: Person
+    quantitys: [ProductQuantitys]
+  }
+
+  type ProductSupplier {
+    person: Person
+    prices: [ProductPrices]
+  }
+
   input ProductInput {
     id: ID
     name: String!
@@ -342,6 +377,7 @@ const typeDefs = gql`
     # Product
     product(id: ID!): Product
     products(limit: Int, offset: Int): [Product]
+    productsOther(id: ID!): ProductOther
   }
 
   type Mutation {

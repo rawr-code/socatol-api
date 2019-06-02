@@ -7,14 +7,17 @@ module.exports = {
     try {
       const product = await Product.findById(id)
         .populate('warehouse')
-        .populate('clients')
-        .populate('suppliders');
+        .populate('clients.person')
+        .populate('clients.quantitys.invoice')
+        .populate('suppliders.person')
+        .populate('clients.prices.invoice');
 
       return product;
     } catch (error) {
       console.log(error);
     }
   },
+
   products: async (root, { limit, offset }) => {
     try {
       const products = await Product.find({})

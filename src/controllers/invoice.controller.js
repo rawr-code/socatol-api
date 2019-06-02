@@ -76,16 +76,119 @@ module.exports = {
         await person.save();
       }
 
+      // Invoice
+
+      let invoice;
+
+      invoice = new Invoice({
+        type,
+        dateEmit: moment().format('DD-MM-YYYY'),
+        paymentType: input.paymentType,
+        note: input.note,
+        person
+      });
+
       // Products
       products = products.map(async item => {
         amount += Number(item.price) * Number(item.quantity);
         if (item.product) {
           let product = await Product.findById(item.product);
           if (type === 'VENTA') {
-            product.clients.push(person);
+            console.log('venta');
+            if (product.clients.length > 0) {
+              console.log('if');
+
+              const indexPerson = product.clients.findIndex(
+                item => item.person.toString() === person._id.toString()
+              );
+              if (indexPerson >= 0) {
+                console.log('find if');
+                product.clients[indexPerson].quantitys.push({
+                  invoice,
+                  date: moment().format('DD-MM-YYYY'),
+                  quantity: item.quantity
+                });
+              } else {
+                console.log('find else');
+                product.clients.push({
+                  person,
+                  quantitys: [
+                    {
+                      invoice,
+                      date: moment().format('DD-MM-YYYY'),
+                      quantity: item.quantity
+                    }
+                  ]
+                });
+              }
+            } else {
+              console.log('else');
+
+              product.clients = [
+                {
+                  person,
+                  quantitys: [
+                    {
+                      invoice,
+                      date: moment().format('DD-MM-YYYY'),
+                      quantity: item.quantity
+                    }
+                  ]
+                }
+              ];
+            }
+            product.stock -= item.quantity;
             await product.save();
           } else if (type === 'COMPRA') {
-            product.suppliders.push(person);
+            console.log('compra');
+
+            if (product.suppliders.length > 0) {
+              console.log('if');
+
+              const indexPerson = product.suppliders.findIndex(
+                item => item.person.toString() === person._id.toString()
+              );
+              if (indexPerson >= 0) {
+                console.log('find if');
+                product.suppliders[indexPerson].prices.push({
+                  invoice,
+                  date: moment().format('DD-MM-YYYY'),
+                  quantity: item.quantity,
+                  amount: item.price
+                });
+              } else {
+                console.log('find else');
+                product.suppliders.push({
+                  person,
+                  prices: [
+                    {
+                      invoice,
+                      date: moment().format('DD-MM-YYYY'),
+                      quantity: item.quantity,
+                      amount: item.price
+                    }
+                  ]
+                });
+              }
+            } else {
+              console.log('else');
+
+              product.suppliders = [
+                {
+                  person,
+                  prices: [
+                    {
+                      invoice,
+                      date: moment().format('DD-MM-YYYY'),
+                      quantity: item.quantity,
+                      amount: item.price
+                    }
+                  ]
+                }
+              ];
+            }
+
+            product.stock += item.quantity;
             await product.save();
           }
           return item;
@@ -112,19 +215,10 @@ module.exports = {
       products = await Promise.all(products);
       // console.log(products);
 
-      // Invoice
+      // Invoice types
+      invoice.products = products;
+      invoice.amount = amount;
 
-      let invoice;
-
-      invoice = new Invoice({
-        type,
-        dateEmit: moment().format('DD-MM-YYYY'),
-        paymentType: input.paymentType,
-        note: input.note,
-        person,
-        products,
-        amount
-      });
       if (type === 'VENTA') {
         invoice.number = config.invoice.sale.number;
       } else if (type === 'COMPRA') {

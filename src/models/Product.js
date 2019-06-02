@@ -21,15 +21,57 @@ const ProductSchema = new Schema(
 
     suppliders: [
       {
-        type: Schema.Types.ObjectId,
-        ref: 'Person'
+        person: {
+          type: Schema.Types.ObjectId,
+          ref: 'Person'
+        },
+        prices: [
+          {
+            invoice: {
+              type: Schema.Types.ObjectId,
+              ref: 'Invoice',
+              required: true
+            },
+            date: {
+              type: String,
+              required: true
+            },
+            amount: {
+              type: Number,
+              required: true
+            },
+            quantity: {
+              type: Number,
+              required: true
+            }
+          }
+        ]
       }
     ],
 
     clients: [
       {
-        type: Schema.Types.ObjectId,
-        ref: 'Person'
+        person: {
+          type: Schema.Types.ObjectId,
+          ref: 'Person'
+        },
+        quantitys: [
+          {
+            invoice: {
+              type: Schema.Types.ObjectId,
+              ref: 'Invoice',
+              required: true
+            },
+            date: {
+              type: String,
+              required: true
+            },
+            quantity: {
+              type: Number,
+              required: true
+            }
+          }
+        ]
       }
     ],
 

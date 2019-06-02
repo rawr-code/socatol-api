@@ -72,6 +72,9 @@ const Queries = {
   },
   products: (root, args, context) => {
     return productController.products(root, args);
+  },
+  productsOther: (root, args, context) => {
+    return productController.product(root, args);
   }
 };
 
