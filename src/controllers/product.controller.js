@@ -58,6 +58,7 @@ module.exports = {
   },
   updateProduct: async (root, { input }) => {
     try {
+      console.log(input);
       await Product.findOneAndUpdate({ _id: input.id }, input);
 
       return 'Actualizado con exito';
