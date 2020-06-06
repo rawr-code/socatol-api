@@ -13,7 +13,7 @@
     "nodemon": "^1.18.7"
   },
   "dependencies": {
-    "apollo-server": "^2.5.0",
+    "apollo-server": "^2.14.2",
     "bcryptjs": "^2.4.3",
     "child_process": "^1.0.2",
     "cron": "^1.7.1",
