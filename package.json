@@ -23,7 +23,7 @@
     "jsonwebtoken": "^8.4.0",
     "lodash": "^4.17.11",
     "mkdirp": "^0.5.1",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "mongodb": "^3.2.5",
     "mongodb-backup": "^1.6.9",
     "mongodb-restore": "^1.6.2",
